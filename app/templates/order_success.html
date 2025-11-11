@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Pedido Confirmado - Meatz Burger{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center">
+        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+        <h1 class="mt-3">Pedido Confirmado!</h1>
+        <p class="lead">Seu pedido #{{ order.id }} foi recebido com sucesso.</p>
+        
+        <div class="card mx-auto mt-4" style="max-width: 500px;">
+            <div class="card-body">
+                <h5>Detalhes do Pedido</h5>
+                <p><strong>Mesa:</strong> {{ order.table.number if order.table else '-' }}</p>
+                <p><strong>Total:</strong> R$ {{ "%.2f"|format(order.total) }}</p>
+                <p><strong>Pagamento:</strong> {{ order.payment_method }}</p>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="{{ url_for('main.track_order', order_id=order.id) }}" class="btn btn-lg" style="background: linear-gradient(135deg, #E99856, #F28D34); color: white; font-weight: 600; padding: 1rem 2rem; border: none; box-shadow: 0 5px 15px rgba(233, 152, 86, 0.3);">
+                <i class="fas fa-eye"></i> Acompanhar Pedido em Tempo Real
+            </a>
+        </div>
+        <div class="mt-3">
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">Voltar ao Início</a>
+            <a href="{{ url_for('main.menu') }}" class="btn btn-outline-secondary">Ver Cardápio</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

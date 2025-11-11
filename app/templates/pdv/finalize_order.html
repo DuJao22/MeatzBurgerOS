@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Finalizar Pedido - PDV{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('pdv.table_order', table_id=order.table_id) }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Mesa
+        </a>
+    </div>
+    <h2>Finalizar Pedido #{{ order.id }}</h2>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Detalhes do Pedido</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            {% for item in order_items %}
+                            <tr>
+                                <td>{{ item.quantity }}x {{ item.product_name }}</td>
+                                <td>R$ {{ "%.2f"|format(item.price * item.quantity) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Total:</th>
+                                <th>R$ {{ "%.2f"|format(order.total) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Pagamento</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Método de Pagamento</label>
+                            <select class="form-control" name="payment_method" required>
+                                <option value="dinheiro">Dinheiro</option>
+                                <option value="credito">Cartão de Crédito</option>
+                                <option value="debito">Cartão de Débito</option>
+                                <option value="pix">PIX</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Confirmar Pagamento</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

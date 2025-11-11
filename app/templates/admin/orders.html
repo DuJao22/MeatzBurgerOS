@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Pedidos - Admin{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Dashboard
+        </a>
+    </div>
+    <h2>Gerenciar Pedidos</h2>
+    
+    <div class="mb-3">
+        <a href="{{ url_for('admin.orders', status='all') }}" class="btn btn-sm {{ 'btn-primary' if status_filter == 'all' else 'btn-outline-primary' }}">Todos</a>
+        <a href="{{ url_for('admin.orders', status='pendente') }}" class="btn btn-sm {{ 'btn-warning' if status_filter == 'pendente' else 'btn-outline-warning' }}">Pendentes</a>
+        <a href="{{ url_for('admin.orders', status='pago') }}" class="btn btn-sm {{ 'btn-success' if status_filter == 'pago' else 'btn-outline-success' }}">Pagos</a>
+    </div>
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Mesa</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Pagamento</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.table.number if order.table else '-' }}</td>
+                <td>R$ {{ "%.2f"|format(order.total) }}</td>
+                <td><span class="badge bg-warning">{{ order.status }}</span></td>
+                <td>{{ order.payment_method or '-' }}</td>
+                <td>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>
+                    <a href="{{ url_for('admin.order_detail', id=order.id) }}" class="btn btn-sm btn-info">Ver</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

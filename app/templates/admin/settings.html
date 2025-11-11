@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Configurações - Admin - Meatz Burger{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="mb-3">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Dashboard
+        </a>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="{{ url_for('admin.dashboard') }}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="{{ url_for('admin.products') }}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-utensils"></i> Produtos
+                </a>
+                <a href="{{ url_for('admin.categories') }}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tags"></i> Categorias
+                </a>
+                <a href="{{ url_for('admin.orders') }}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-receipt"></i> Pedidos
+                </a>
+                <a href="{{ url_for('admin.tables') }}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-table"></i> Mesas
+                </a>
+                <a href="{{ url_for('admin.users') }}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-users"></i> Usuários
+                </a>
+                <a href="{{ url_for('admin.settings') }}" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-cog"></i> Configurações
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-cog"></i> Configurações da Loja</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <h5 class="border-bottom pb-2">Informações Básicas</h5>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="store_name" class="form-label">Nome da Loja</label>
+                                <input type="text" class="form-control" id="store_name" name="store_name" 
+                                       value="{{ settings.store_name }}" required>
+                                <small class="text-muted">Este nome aparecerá no menu e em todo o site</small>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="logo_url" class="form-label">URL da Logo</label>
+                                <input type="url" class="form-control" id="logo_url" name="logo_url" 
+                                       value="{{ settings.logo_url }}" placeholder="https://exemplo.com/logo.png">
+                                <small class="text-muted">Deixe vazio para usar o ícone padrão</small>
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <h5 class="border-bottom pb-2 mt-3">Informações de Contato</h5>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Telefone</label>
+                                <input type="text" class="form-control" id="phone" name="phone" 
+                                       value="{{ settings.phone }}" placeholder="(61) 9 9999-9999">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">E-mail</label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       value="{{ settings.email }}" placeholder="contato@meatzburger.com">
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <label for="address" class="form-label">Endereço</label>
+                                <input type="text" class="form-control" id="address" name="address" 
+                                       value="{{ settings.address }}" placeholder="Av. Principal, 175 - Centro">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="opening_hours" class="form-label">Horário de Funcionamento</label>
+                                <input type="text" class="form-control" id="opening_hours" name="opening_hours" 
+                                       value="{{ settings.opening_hours }}" placeholder="11:00 - 23:00 (Todos os dias)">
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <h5 class="border-bottom pb-2 mt-3">Redes Sociais</h5>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="whatsapp" class="form-label">WhatsApp (apenas números)</label>
+                                <input type="text" class="form-control" id="whatsapp" name="whatsapp" 
+                                       value="{{ settings.whatsapp }}" placeholder="5561999999999">
+                                <small class="text-muted">Exemplo: 5561999999999</small>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="instagram" class="form-label">Instagram (usuário)</label>
+                                <input type="text" class="form-control" id="instagram" name="instagram" 
+                                       value="{{ settings.instagram }}" placeholder="@meatzburger">
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="facebook" class="form-label">Facebook (URL)</label>
+                                <input type="url" class="form-control" id="facebook" name="facebook" 
+                                       value="{{ settings.facebook }}" placeholder="https://facebook.com/meatzburger">
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <h5 class="border-bottom pb-2 mt-3">Configurações de Entrega</h5>
+                            </div>
+                            
+                            <div class="col-md-12 mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable_delivery" name="enable_delivery" 
+                                           {% if settings.enable_delivery %}checked{% endif %}>
+                                    <label class="form-check-label" for="enable_delivery">
+                                        <strong>Habilitar Delivery</strong>
+                                    </label>
+                                    <small class="d-block text-muted">Permite que clientes façam pedidos para entrega</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="store_zipcode" class="form-label">CEP da Loja</label>
+                                <input type="text" class="form-control" id="store_zipcode" name="store_zipcode" 
+                                       value="{{ settings.store_zipcode }}" placeholder="00000-000">
+                                <small class="text-muted">Usado para calcular raio de entrega</small>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="delivery_radius_km" class="form-label">Raio de Entrega (km)</label>
+                                <input type="number" step="0.1" class="form-control" id="delivery_radius_km" name="delivery_radius_km" 
+                                       value="{{ settings.delivery_radius_km or 5.0 }}" placeholder="5.0">
+                                <small class="text-muted">Distância máxima para entregas</small>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="delivery_fee" class="form-label">Taxa de Entrega (R$)</label>
+                                <input type="number" step="0.01" class="form-control" id="delivery_fee" name="delivery_fee" 
+                                       value="{{ settings.delivery_fee or 5.0 }}" placeholder="5.00">
+                                <small class="text-muted">Valor cobrado por entrega</small>
+                            </div>
+                            
+                            {% if settings.store_latitude and settings.store_longitude %}
+                            <div class="col-md-12">
+                                <div class="alert alert-success">
+                                    <i class="bi bi-check-circle"></i> Localização configurada: 
+                                    <strong>{{ settings.store_city }}, {{ settings.store_state }}</strong>
+                                    ({{ "%.6f"|format(settings.store_latitude) }}, {{ "%.6f"|format(settings.store_longitude) }})
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save"></i> Salvar Configurações
+                            </button>
+                            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> Voltar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if settings.logo_url %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Prévia da Logo</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ settings.logo_url }}" alt="Logo" style="max-height: 200px; max-width: 100%;">
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

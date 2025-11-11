@@ -1,0 +1,103 @@
+127.0.0.1 - - [11/Nov/2025:20:44:15 +0000] "GET / HTTP/1.1" 200 61775 "-" "Go-http-client/2.0"
+[2025-11-11 20:44:37,746] ERROR in app: Exception on /auth/login [POST]
+Traceback (most recent call last):
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/render/project/src/app/auth.py", line 22, in login
+    login_user(user_session, remember=remember)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask_login/utils.py", line 184, in login_user
+    session["_user_id"] = user_id
+    ~~~~~~~^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask/sessions.py", line 97, in _fail
+    raise RuntimeError(
+    ...<3 lines>...
+    )
+RuntimeError: The session is unavailable because no secret key was set.  Set the secret_key on the application to something unique and secret.
+✅ Todas as tabelas criadas com sucesso!
+✅ Migração aplicada: "order".order_type
+✅ Migração aplicada: "order".customer_id
+✅ Migração aplicada: "order".delivery_address
+✅ Migração aplicada: "order".delivery_fee
+✅ Migração aplicada: "order".tip_amount
+✅ Migração aplicada: "order".tip_percentage
+✅ Migração aplicada: "order".source_channel
+✅ Migração aplicada: product.prep_time_minutes
+✅ Migração aplicada: product.prep_section
+✅ Migração aplicada: product.allows_modifiers
+✅ Migração aplicada: order_item.status
+✅ Migração aplicada: order_item.prep_started_at
+✅ Migração aplicada: order_item.prep_completed_at
+✅ Migração aplicada: order_item.delivered_at
+✅ Migração aplicada: order_item.group_priority
+✅ Migração aplicada: "table".layout_x
+✅ Migração aplicada: "table".layout_y
+✅ Migração aplicada: "table".shape
+✅ Migração aplicada: payment.external_reference
+✅ Migração aplicada: payment.split_id
+✅ Migração aplicada: inventory.expiry_alert_days
+✅ Migração aplicada: user.commission_percentage
+✅ Migração aplicada: user.is_active
+✅ Migração aplicada: user.last_login
+✅ Migração aplicada: settings.tip_percentage
+✅ Migração aplicada: settings.enable_auto_tip
+✅ Migração aplicada: settings.store_zipcode
+✅ Migração aplicada: settings.delivery_radius_km
+✅ Migração aplicada: settings.enable_delivery
+✅ Migração aplicada: settings.delivery_fee
+✅ Migração aplicada: settings.store_latitude
+✅ Migração aplicada: settings.store_longitude
+✅ Migração aplicada: settings.store_city
+✅ Migração aplicada: settings.store_state
+✅ Migração aplicada: customer.address
+✅ Migração aplicada: customer.zipcode
+✅ Migração aplicada: customer.city
+✅ Migração aplicada: customer.state
+✅ Migração aplicada: customer.latitude
+✅ Migração aplicada: customer.longitude
+⚠️  Usuário admin criado. ALTERE A SENHA IMEDIATAMENTE!
+✅ Configurações padrão criadas
+🍔 Criando categorias de exemplo...
+✅ 4 categorias criadas
+🍔 Criando produtos de exemplo...
+✅ 12 produtos criados
+🎉 Dados de exemplo carregados com sucesso!
+127.0.0.1 - - [11/Nov/2025:20:44:37 +0000] "POST /auth/login HTTP/1.1" 500 265 "https://meatzburgeros-mery.onrender.com/auth/login" "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+127.0.0.1 - - [11/Nov/2025:20:44:42 +0000] "GET /auth/ HTTP/1.1" 404 207 "-" "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+127.0.0.1 - - [11/Nov/2025:20:44:46 +0000] "GET / HTTP/1.1" 200 61775 "-" "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+127.0.0.1 - - [11/Nov/2025:20:44:46 +0000] "GET /auth/ HTTP/1.1" 404 207 "https://www.google.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+127.0.0.1 - - [11/Nov/2025:20:44:47 +0000] "GET /favicon.ico HTTP/1.1" 404 207 "https://meatzburgeros-mery.onrender.com/auth/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+127.0.0.1 - - [11/Nov/2025:20:44:47 +0000] "GET /api/cart/count HTTP/1.1" 200 12 "https://meatzburgeros-mery.onrender.com/" "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+127.0.0.1 - - [11/Nov/2025:20:44:48 +0000] "GET /auth/login HTTP/1.1" 200 14370 "https://meatzburgeros-mery.onrender.com/" "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+127.0.0.1 - - [11/Nov/2025:20:44:49 +0000] "GET /api/cart/count HTTP/1.1" 200 12 "https://meatzburgeros-mery.onrender.com/auth/login" "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+[2025-11-11 20:44:52,046] ERROR in app: Exception on /auth/login [POST]
+Traceback (most recent call last):
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/render/project/src/app/auth.py", line 22, in login
+    login_user(user_session, remember=remember)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask_login/utils.py", line 184, in login_user
+    session["_user_id"] = user_id
+    ~~~~~~~^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.13/site-packages/flask/sessions.py", line 97, in _fail
+    raise RuntimeError(
+    ...<3 lines>...
+    )
+RuntimeError: The session is unavailable because no secret key was set.  Set the secret_key on the application to something unique and secret.
+127.0.0.1 - - [11/Nov/2025:20:44:52 +0000] "POST /auth/login HTTP/1.1" 500 265 "https://meatzburgeros-mery.onrender.com/auth/login" "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+Need better ways to work with logs? Try the

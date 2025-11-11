@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Cardápio - Meatz Burger{% endblock %}
+
+{% block extra_css %}
+<style>
+    .menu-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+    }
+    
+    .menu-header h1 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 900;
+        font-size: 50px;
+        color: white;
+    }
+    
+    .menu-header p {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 18px;
+    }
+    
+    .category-filter {
+        margin: 2rem 0;
+    }
+    
+    .filter-btn {
+        margin: 0.5rem;
+        padding: 0.5rem 1.5rem;
+        border: 2px solid var(--dark-brown);
+        background: white;
+        color: var(--dark-brown);
+        border-radius: 30px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        text-transform: uppercase;
+        transition: all 0.3s;
+    }
+    
+    .filter-btn:hover, .filter-btn.active {
+        background: var(--dark-brown);
+        color: white;
+        border-color: var(--dark-brown);
+    }
+    
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="menu-header">
+    <div class="container">
+        <div class="mb-3">
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-light">
+                <i class="fas fa-arrow-left"></i> Voltar para Início
+            </a>
+        </div>
+        <h1>Nosso Cardápio</h1>
+        <p class="lead">Sabores irresistíveis que vão te conquistar</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="category-filter text-center">
+        <button class="filter-btn active" data-category="all">Todos</button>
+        {% for category in categories %}
+        <button class="filter-btn" data-category="{{ category.id }}">{{ category.name }}</button>
+        {% endfor %}
+    </div>
+    
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="card product-card" data-category="{{ product.category_id }}">
+            <img src="{{ product.image_url or 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400' }}" 
+                 alt="{{ product.name }}" 
+                 class="card-img-top">
+            <div class="card-body">
+                <h5 class="product-name">{{ product.name }}</h5>
+                <p class="text-muted">{{ product.description }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="product-price">R$ {{ "%.2f"|format(product.price) }}</span>
+                    <button class="btn btn-primary btn-sm add-to-cart" data-id="{{ product.id }}">
+                        <i class="fas fa-cart-plus"></i> Adicionar
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.add-to-cart').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const productId = this.dataset.id;
+        fetch('/api/cart/add', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({product_id: productId, quantity: 1})
+        })
+        .then(r => r.json())
+        .then(data => {
+            if(data.success) {
+                alert('Produto adicionado ao carrinho!');
+                updateCartCount();
+            }
+        });
+    });
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const category = this.dataset.category;
+        document.querySelectorAll('.product-card').forEach(card => {
+            if(category === 'all' || card.dataset.category === category) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

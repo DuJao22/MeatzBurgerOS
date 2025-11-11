@@ -1,0 +1,519 @@
+{% extends "base.html" %}
+{% block title %}Acompanhar Pedido #{{ order.id }} - {{ site_settings.store_name }}{% endblock %}
+{% block content %}
+<style>
+    .tracking-container {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 2rem;
+    }
+    
+    .tracking-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--dark-brown));
+        color: white;
+        padding: 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(106, 28, 11, 0.2);
+        text-align: center;
+    }
+    
+    .tracking-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    .order-number {
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 1rem 0;
+    }
+    
+    .status-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(106, 28, 11, 0.08);
+    }
+    
+    .status-icon-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .status-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .status-icon.status-pendente {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+    
+    .status-icon.status-preparando {
+        background: linear-gradient(135deg, #f2994a, #f2c94c);
+    }
+    
+    .status-icon.status-pronto {
+        background: linear-gradient(135deg, #56ab2f, #a8e063);
+    }
+    
+    .status-icon.status-saiu_para_entrega {
+        background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+    }
+    
+    .status-icon.status-entregue,
+    .status-icon.status-finalizado {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+    
+    .status-text {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .status-text h2 {
+        color: var(--dark-brown);
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    .status-text p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+    
+    .progress-bar-container {
+        background: #e0e0e0;
+        height: 8px;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 2rem 0;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        transition: width 0.5s ease;
+        border-radius: 10px;
+    }
+    
+    .timeline {
+        position: relative;
+        padding-left: 40px;
+        margin: 2rem 0;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: #e0e0e0;
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-bottom: 2rem;
+    }
+    
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -28px;
+        top: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #e0e0e0;
+    }
+    
+    .timeline-item.active::before {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        animation: glow 1.5s infinite;
+    }
+    
+    .timeline-item.completed::before {
+        background: #56ab2f;
+        border-color: #56ab2f;
+    }
+    
+    @keyframes glow {
+        0%, 100% { box-shadow: 0 0 5px var(--primary-color); }
+        50% { box-shadow: 0 0 20px var(--primary-color); }
+    }
+    
+    .timeline-content h4 {
+        color: var(--dark-brown);
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    .timeline-content p {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .items-list {
+        background: var(--background-cream);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .items-list h3 {
+        color: var(--dark-brown);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    .item-row {
+        background: white;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .item-name {
+        font-weight: 600;
+        color: var(--dark-brown);
+    }
+    
+    .item-quantity {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-right: 0.5rem;
+    }
+    
+    .item-status {
+        padding: 0.35rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .item-status.novo {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+    
+    .item-status.preparando {
+        background: #fff3e0;
+        color: #f57c00;
+    }
+    
+    .item-status.pronto {
+        background: #e8f5e9;
+        color: #388e3c;
+    }
+    
+    .item-status.entregue {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
+    
+    .order-info {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .order-info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .order-info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .order-info-label {
+        color: #666;
+        font-weight: 500;
+    }
+    
+    .order-info-value {
+        color: var(--dark-brown);
+        font-weight: 600;
+    }
+    
+    .refresh-notice {
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 2rem;
+        padding: 1rem;
+        background: var(--background-cream);
+        border-radius: 10px;
+    }
+    
+    .refresh-notice i {
+        animation: spin 2s linear infinite;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+<div class="tracking-container">
+    <div class="mb-3">
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Início
+        </a>
+    </div>
+    <div class="tracking-header">
+        <h1>Acompanhe seu Pedido</h1>
+        <div class="order-number">#{{ order.id }}</div>
+        <p>{{ site_settings.store_name }}</p>
+    </div>
+    
+    <div class="status-card">
+        <div class="status-icon-container">
+            <div class="status-icon status-{{ order.status }}">
+                {% if order.status == 'pendente' %}
+                <i class="fas fa-receipt"></i>
+                {% elif order.status == 'preparando' %}
+                <i class="fas fa-fire"></i>
+                {% elif order.status == 'pronto' %}
+                <i class="fas fa-check-circle"></i>
+                {% elif order.status == 'saiu_para_entrega' %}
+                <i class="fas fa-motorcycle"></i>
+                {% elif order.status in ['entregue', 'finalizado'] %}
+                <i class="fas fa-thumbs-up"></i>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="status-text">
+            <h2>{{ status_friendly }}</h2>
+            {% if estimated_time %}
+            <p><i class="fas fa-clock"></i> Tempo estimado: {{ estimated_time }}</p>
+            {% endif %}
+            <p><i class="fas fa-stopwatch"></i> Pedido feito há {{ order_age_minutes }} minutos</p>
+        </div>
+        
+        <div class="progress-bar-container">
+            <div class="progress-bar" style="width: {{ progress }}%;"></div>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-item {{ 'completed' if order.status != 'pendente' else 'active' if order.status == 'pendente' else '' }}">
+                <div class="timeline-content">
+                    <h4>Pedido Recebido</h4>
+                    <p>Seu pedido foi confirmado e está na fila</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item {{ 'completed' if order.status in ['pronto', 'entregue', 'finalizado'] else 'active' if order.status == 'preparando' else '' }}">
+                <div class="timeline-content">
+                    <h4>Em Preparação</h4>
+                    <p>Nossa cozinha está preparando seu pedido</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item {{ 'completed' if order.status in ['saiu_para_entrega', 'entregue', 'finalizado'] else 'active' if order.status == 'pronto' else '' }}">
+                <div class="timeline-content">
+                    <h4>Pronto</h4>
+                    <p>Seu pedido está pronto para retirada/entrega</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item {{ 'completed' if order.status in ['entregue', 'finalizado'] else 'active' if order.status == 'saiu_para_entrega' else '' }}">
+                <div class="timeline-content">
+                    <h4>Saiu para Entrega</h4>
+                    <p>Seu pedido está a caminho!</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item {{ 'completed' if order.status in ['entregue', 'finalizado'] else '' }}">
+                <div class="timeline-content">
+                    <h4>Entregue</h4>
+                    <p>Bom apetite!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-card">
+        <div class="items-list">
+            <h3><i class="fas fa-list"></i> Itens do Pedido</h3>
+            {% for item in items %}
+            <div class="item-row">
+                <div>
+                    <span class="item-quantity">{{ item.quantity }}x</span>
+                    <span class="item-name">{{ item.product_name }}</span>
+                </div>
+                <span class="item-status {{ item.status }}">{{ item.status }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="order-info">
+            <div class="order-info-row">
+                <span class="order-info-label">Tipo de Pedido</span>
+                <span class="order-info-value">
+                    {% if order.table_id %}
+                    <i class="fas fa-table"></i> Mesa {{ order.table_id }}
+                    {% elif order.order_type == 'entrega' %}
+                    <i class="fas fa-motorcycle"></i> Entrega
+                    {% else %}
+                    <i class="fas fa-shopping-bag"></i> Retirada
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="order-info-row">
+                <span class="order-info-label">Total</span>
+                <span class="order-info-value">R$ {{ "%.2f"|format(order.total) }}</span>
+            </div>
+            
+            {% if order.delivery_address %}
+            <div class="order-info-row">
+                <span class="order-info-label">Endereço de Entrega</span>
+                <span class="order-info-value">{{ order.delivery_address }}</span>
+            </div>
+            {% endif %}
+            
+            {% if order.notes %}
+            <div class="order-info-row">
+                <span class="order-info-label">Observações</span>
+                <span class="order-info-value">{{ order.notes }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if order.status == 'saiu_para_entrega' %}
+    <div class="status-card text-center">
+        <h3 class="mb-3" style="color: var(--dark-brown); font-weight: 700;">Seu pedido está chegando!</h3>
+        <p class="mb-4">Já recebeu seu pedido? Confirme abaixo:</p>
+        <form method="POST" action="{{ url_for('main.confirm_delivery', order_id=order.id) }}" onsubmit="return confirm('Confirmar que você recebeu o pedido?');">
+            <button type="submit" class="btn btn-success btn-lg">
+                <i class="fas fa-check-circle"></i> Confirmar Recebimento
+            </button>
+        </form>
+    </div>
+    {% endif %}
+    
+    <div class="refresh-notice">
+        <i class="fas fa-sync-alt"></i> Esta página é atualizada automaticamente a cada 10 segundos
+    </div>
+</div>
+
+<script>
+// Polling de status do pedido a cada 10 segundos
+function updateOrderStatus() {
+    fetch('{{ url_for("main.order_status_api", order_id=order.id) }}')
+        .then(response => response.json())
+        .then(data => {
+            // Atualizar status amigável
+            const statusElement = document.querySelector('.status-badge');
+            if (statusElement && data.status_friendly) {
+                statusElement.textContent = data.status_friendly;
+                
+                // Atualizar classe do badge baseado no status
+                statusElement.className = 'status-badge';
+                if (data.status === 'preparando') {
+                    statusElement.classList.add('status-preparing');
+                } else if (data.status === 'pronto') {
+                    statusElement.classList.add('status-ready');
+                } else if (data.status === 'entregue' || data.status === 'finalizado') {
+                    statusElement.classList.add('status-delivered');
+                }
+            }
+            
+            // Atualizar barra de progresso
+            const progressBar = document.querySelector('.progress-fill');
+            if (progressBar && data.progress !== undefined) {
+                progressBar.style.width = data.progress + '%';
+            }
+            
+            const progressText = document.querySelector('.progress-text');
+            if (progressText && data.progress !== undefined) {
+                progressText.textContent = data.progress + '%';
+            }
+            
+            // Atualizar tempo estimado
+            const estimatedTimeElement = document.querySelector('.estimated-time');
+            if (estimatedTimeElement && data.estimated_time) {
+                estimatedTimeElement.textContent = data.estimated_time;
+            }
+            
+            // Atualizar tempo decorrido
+            const orderAgeElement = document.querySelector('.order-age');
+            if (orderAgeElement && data.order_age_minutes !== undefined) {
+                orderAgeElement.textContent = `Pedido feito há ${data.order_age_minutes} minutos`;
+            }
+            
+            // Atualizar status da timeline
+            document.querySelectorAll('.timeline-item').forEach((item, index) => {
+                item.classList.remove('active', 'completed');
+                
+                if (data.status === 'pendente' && index === 0) {
+                    item.classList.add('active');
+                } else if (data.status === 'preparando') {
+                    if (index === 0) item.classList.add('completed');
+                    if (index === 1) item.classList.add('active');
+                } else if (data.status === 'pronto') {
+                    if (index <= 1) item.classList.add('completed');
+                    if (index === 2) item.classList.add('active');
+                } else if (data.status === 'saiu_para_entrega') {
+                    if (index <= 2) item.classList.add('completed');
+                    if (index === 3) item.classList.add('active');
+                } else if (data.status === 'entregue' || data.status === 'finalizado') {
+                    if (index <= 3) item.classList.add('completed');
+                    if (index === 4) item.classList.add('active');
+                }
+            });
+            
+            // Recarregar a página se mudou para status 'saiu_para_entrega' para mostrar o botão de confirmação
+            if (data.status === 'saiu_para_entrega' && window.lastStatus !== 'saiu_para_entrega') {
+                location.reload();
+            }
+            window.lastStatus = data.status;
+            
+            // Se o pedido foi finalizado, parar o polling
+            if (data.status === 'finalizado' || data.status === 'cancelado') {
+                clearInterval(pollingInterval);
+            }
+        })
+        .catch(error => console.error('Erro ao atualizar status:', error));
+}
+
+// Atualizar imediatamente e depois a cada 10 segundos
+const pollingInterval = setInterval(updateOrderStatus, 10000);
+</script>
+{% endblock %}

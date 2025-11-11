@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Mesa {{ table.number }} - PDV{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('pdv.index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para PDV
+        </a>
+    </div>
+    <h2>Mesa {{ table.number }} - {% if table.status == 'livre' %}Livre{% else %}Ocupada{% endif %}</h2>
+    
+    {% if current_order %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Pedido Atual #{{ current_order.id }}</h5>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Qtd</th>
+                        <th>Preço</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_items %}
+                    <tr>
+                        <td>{{ item.product_name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>R$ {{ "%.2f"|format(item.price) }}</td>
+                        <td>R$ {{ "%.2f"|format(item.price * item.quantity) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3">Total:</th>
+                        <th>R$ {{ "%.2f"|format(current_order.total) }}</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <a href="{{ url_for('pdv.finalize_order', order_id=current_order.id) }}" class="btn btn-success">Finalizar Pedido</a>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="card">
+        <div class="card-header">
+            <h5>Adicionar Produtos</h5>
+        </div>
+        <div class="card-body">
+            <div class="category-filter text-center mb-4">
+                <button class="btn btn-outline-primary btn-sm filter-btn active" data-category="all">Todos</button>
+                {% for category in categories %}
+                <button class="btn btn-outline-primary btn-sm filter-btn" data-category="{{ category.id }}">{{ category.name }}</button>
+                {% endfor %}
+            </div>
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-3 mb-3 product-card" data-category="{{ product.category_id }}">
+                    <div class="card h-100">
+                        {% if product.image_url %}
+                        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 150px; object-fit: cover;">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 150px;">
+                            <i class="fas fa-utensils fa-3x text-white"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h6>{{ product.name }}</h6>
+                            <p class="text-muted small">R$ {{ "%.2f"|format(product.price) }}</p>
+                            <button class="btn btn-sm btn-primary w-100" onclick="addProduct({{ product.id }})">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function addProduct(productId) {
+    {% if current_order %}
+    fetch('/pdv/api/pedido/{{ current_order.id }}/adicionar-item', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({product_id: productId, quantity: 1})
+    }).then(() => location.reload());
+    {% else %}
+    fetch('/pdv/api/pedido/criar', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({table_id: {{ table.id }}, items: [{product_id: productId, quantity: 1}]})
+    }).then(() => location.reload());
+    {% endif %}
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const category = this.dataset.category;
+        document.querySelectorAll('.product-card').forEach(card => {
+            if(category === 'all' || card.dataset.category === category) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

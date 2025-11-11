@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Adicionar Banner - Admin{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('admin.banners') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Banners
+        </a>
+    </div>
+    <h2>Adicionar Banner Promocional</h2>
+    <form method="POST" enctype="multipart/form-data" class="mt-4">
+        <div class="mb-3">
+            <label class="form-label">Título</label>
+            <input type="text" class="form-control" name="title" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Descrição</label>
+            <textarea class="form-control" name="description" rows="2"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Imagem do Banner</label>
+            <input type="file" class="form-control" name="image_file" accept="image/*">
+            <small class="text-muted">Ou insira uma URL abaixo (recomendado: 1200x400px)</small>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">URL da Imagem (alternativa)</label>
+            <input type="text" class="form-control" name="image_url">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Link (opcional)</label>
+            <input type="text" class="form-control" name="link_url" placeholder="https://...">
+            <small class="text-muted">URL para onde o banner deve direcionar quando clicado</small>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ordem de Exibição</label>
+            <input type="number" class="form-control" name="display_order" value="0">
+            <small class="text-muted">Menor número aparece primeiro</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Adicionar Banner</button>
+        <a href="{{ url_for('admin.banners') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

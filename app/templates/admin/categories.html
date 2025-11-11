@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Categorias - Admin{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Dashboard
+        </a>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gerenciar Categorias</h2>
+        <a href="{{ url_for('admin.add_category') }}" class="btn btn-primary">Adicionar Categoria</a>
+    </div>
+    
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <img src="{{ category.image_url or 'https://via.placeholder.com/300' }}" class="card-img-top" alt="{{ category.name }}">
+                <div class="card-body">
+                    <h5>{{ category.name }}</h5>
+                    <p class="text-muted">{{ category.description }}</p>
+                    <p><strong>{{ category.products|length }}</strong> produtos</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

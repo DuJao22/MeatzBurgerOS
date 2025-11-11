@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Cardápio Digital - Meatz Burger{% endblock %}
+
+{% block extra_css %}
+<style>
+    .digital-menu-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        padding: 2rem 0;
+        color: white;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .banner-carousel {
+        margin-bottom: 2rem;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .banner-carousel img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+    
+    .product-card-digital {
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+        margin-bottom: 1.5rem;
+    }
+    
+    .product-card-digital:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .product-card-digital img {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .product-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #E99856;
+    }
+    
+    .add-to-cart-btn {
+        background: var(--dark-brown);
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 30px;
+        font-weight: 700;
+        transition: all 0.3s;
+    }
+    
+    .add-to-cart-btn:hover {
+        background: #E99856;
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="digital-menu-header">
+    <div class="container">
+        <h1><i class="fas fa-utensils"></i> Cardápio Digital</h1>
+        {% if table %}
+        <p class="lead"><i class="fas fa-chair"></i> Mesa {{ table.number }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+    {% if banners %}
+    <div id="bannersCarousel" class="carousel slide banner-carousel" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for banner in banners %}
+            <button type="button" data-bs-target="#bannersCarousel" data-bs-slide-to="{{ loop.index0 }}" 
+                    {{ 'class="active"' if loop.first else '' }}></button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner">
+            {% for banner in banners %}
+            <div class="carousel-item {{ 'active' if loop.first else '' }}">
+                {% if banner.link_url %}
+                <a href="{{ banner.link_url }}">
+                    <img src="{{ banner.image_url }}" class="d-block w-100" alt="{{ banner.title }}">
+                </a>
+                {% else %}
+                <img src="{{ banner.image_url }}" class="d-block w-100" alt="{{ banner.title }}">
+                {% endif %}
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ banner.title }}</h5>
+                    {% if banner.description %}
+                    <p>{{ banner.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#bannersCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bannersCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="category-filter text-center mb-4">
+        <button class="btn btn-outline-dark btn-sm m-1 filter-btn active" data-category="all">Todos</button>
+        {% for category in categories %}
+        <button class="btn btn-outline-dark btn-sm m-1 filter-btn" data-category="{{ category.id }}">{{ category.name }}</button>
+        {% endfor %}
+    </div>
+    
+    <div class="row" id="products-grid">
+        {% for product in products %}
+        <div class="col-md-6 col-lg-4 product-item" data-category="{{ product.category_id }}">
+            <div class="card product-card-digital">
+                <img src="{{ product.image_url or 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400' }}" 
+                     class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted small">{{ product.description or '' }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="product-price">R$ {{ "%.2f"|format(product.price) }}</span>
+                        <form method="POST" action="{{ url_for('main.add_product_to_cart', product_id=product.id) }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-primary add-to-cart-btn">
+                                <i class="fas fa-cart-plus"></i> Adicionar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-5 mb-4">
+        <a href="{{ url_for('main.cart') }}" class="btn btn-success btn-lg">
+            <i class="fas fa-shopping-cart"></i> Ver Carrinho
+        </a>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const category = this.dataset.category;
+        document.querySelectorAll('.product-item').forEach(item => {
+            if(category === 'all' || item.dataset.category === category) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

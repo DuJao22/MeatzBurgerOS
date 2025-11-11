@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+{% block title %}Finalizar Pedido - Meatz Burger{% endblock %}
+
+{% block extra_css %}
+<style>
+    .order-type-card {
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid #dee2e6;
+    }
+    .order-type-card:hover {
+        border-color: #E99856;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .order-type-card.selected {
+        border-color: #E99856;
+        background-color: #FEF2E9;
+    }
+    .order-type-card input[type="radio"] {
+        display: none;
+    }
+    .order-type-icon {
+        font-size: 3rem;
+        color: #E99856;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="mb-3">
+        <a href="{{ url_for('main.cart') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Carrinho
+        </a>
+    </div>
+    <h2 class="mb-4">Finalizar Pedido</h2>
+    
+    {% if customer %}
+    <div class="alert alert-info">
+        <i class="bi bi-person-circle"></i> Pedido para: <strong>{{ customer.name }}</strong> - {{ customer.phone }}
+        <a href="{{ url_for('auth.customer_logout') }}" class="btn btn-sm btn-outline-secondary float-end">Trocar Cliente</a>
+    </div>
+    {% endif %}
+    
+    <div class="row mt-4">
+        <div class="col-lg-8">
+            <form method="POST" id="checkoutForm">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Tipo de Pedido</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="order-type-card card h-100" id="card-retirada">
+                                    <div class="card-body text-center">
+                                        <input type="radio" name="order_type" value="retirada" checked>
+                                        <div class="order-type-icon">
+                                            <i class="bi bi-shop"></i>
+                                        </div>
+                                        <h5>Retirada no Local</h5>
+                                        <p class="text-muted mb-0">Retire seu pedido na loja</p>
+                                    </div>
+                                </label>
+                            </div>
+                            {% if delivery_enabled %}
+                            <div class="col-md-6">
+                                <label class="order-type-card card h-100" id="card-entrega">
+                                    <div class="card-body text-center">
+                                        <input type="radio" name="order_type" value="entrega">
+                                        <div class="order-type-icon">
+                                            <i class="bi bi-truck"></i>
+                                        </div>
+                                        <h5>Entrega</h5>
+                                        <p class="text-muted mb-0">Receba em casa</p>
+                                        <small class="text-success">Taxa: R$ {{ "%.2f"|format(delivery_fee) }}</small>
+                                    </div>
+                                </label>
+                            </div>
+                            {% else %}
+                            <div class="col-md-6">
+                                <div class="card h-100 bg-light">
+                                    <div class="card-body text-center">
+                                        <div class="order-type-icon text-muted">
+                                            <i class="bi bi-truck"></i>
+                                        </div>
+                                        <h5 class="text-muted">Entrega</h5>
+                                        <p class="text-muted mb-0">Não disponível no momento</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mb-4" id="retirada-fields">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Informações de Retirada</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Número da Mesa (opcional)</label>
+                            <input type="number" class="form-control" name="table_number" placeholder="Ex: 5">
+                            <small class="text-muted">Deixe em branco para retirada no balcão</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mb-4" id="entrega-fields" style="display: none;">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Informações de Entrega</h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">CEP</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="zipcode" id="zipcode" 
+                                           placeholder="00000-000" value="{{ customer.zipcode if customer else '' }}">
+                                    <span class="input-group-text" id="cep-loading" style="display: none;">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </span>
+                                </div>
+                                <small class="text-muted">Digite o CEP para buscar o endereço</small>
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label">Endereço Completo</label>
+                                <input type="text" class="form-control" name="address" id="address" 
+                                       placeholder="Rua, número, complemento, bairro" 
+                                       value="{{ customer.address if customer else '' }}">
+                            </div>
+                        </div>
+                        <div class="alert alert-info" id="cep-info">
+                            <i class="bi bi-info-circle"></i> Verificaremos se entregamos no seu CEP após confirmar
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Pagamento e Observações</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Método de Pagamento</label>
+                            <select class="form-control" name="payment_method" id="payment_method" required>
+                                <option value="">Selecione...</option>
+                                <option value="dinheiro">Dinheiro</option>
+                                <option value="credito">Cartão de Crédito</option>
+                                <option value="debito">Cartão de Débito</option>
+                                <option value="pix">PIX</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="troco-field" style="display: none;">
+                            <label class="form-label">Troco para quanto?</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" step="0.01" class="form-control" id="valor_pago" 
+                                       placeholder="Ex: 50.00">
+                            </div>
+                            <div class="alert alert-success mt-2" id="troco-info" style="display: none;">
+                                <i class="bi bi-cash"></i> <strong>Troco:</strong> <span id="troco-valor">R$ 0,00</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" name="notes" id="notes" rows="3" 
+                                      placeholder="Alguma observação especial?"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-check-circle"></i> Confirmar Pedido
+                </button>
+            </form>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Resumo do Pedido</h5>
+                    {% for item in items %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{{ item.quantity }}x {{ item.product.name }}</span>
+                        <span>R$ {{ "%.2f"|format(item.subtotal) }}</span>
+                    </div>
+                    {% endfor %}
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span id="subtotal-value">R$ {{ "%.2f"|format(total) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2" id="delivery-fee-row" style="display: none;">
+                        <span>Taxa de Entrega</span>
+                        <span class="text-success">R$ {{ "%.2f"|format(delivery_fee) }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Total:</strong>
+                        <strong id="total-value">R$ {{ "%.2f"|format(total) }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const orderTypeCards = document.querySelectorAll('.order-type-card');
+    const retiradaFields = document.getElementById('retirada-fields');
+    const entregaFields = document.getElementById('entrega-fields');
+    const deliveryFeeRow = document.getElementById('delivery-fee-row');
+    const totalValue = document.getElementById('total-value');
+    const zipcodeInput = document.getElementById('zipcode');
+    const addressInput = document.getElementById('address');
+    const paymentMethod = document.getElementById('payment_method');
+    const trocoField = document.getElementById('troco-field');
+    const valorPagoInput = document.getElementById('valor_pago');
+    const trocoInfo = document.getElementById('troco-info');
+    const trocoValor = document.getElementById('troco-valor');
+    const notesField = document.getElementById('notes');
+    
+    const subtotal = {{ total }};
+    const deliveryFee = {{ delivery_fee }};
+    let currentTotal = subtotal;
+    
+    orderTypeCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const radio = this.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+                
+                orderTypeCards.forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                if (radio.value === 'retirada') {
+                    retiradaFields.style.display = 'block';
+                    entregaFields.style.display = 'none';
+                    deliveryFeeRow.style.display = 'none';
+                    currentTotal = subtotal;
+                    totalValue.textContent = 'R$ ' + subtotal.toFixed(2);
+                    
+                    zipcodeInput.removeAttribute('required');
+                    addressInput.removeAttribute('required');
+                } else {
+                    retiradaFields.style.display = 'none';
+                    entregaFields.style.display = 'block';
+                    deliveryFeeRow.style.display = 'flex';
+                    currentTotal = subtotal + deliveryFee;
+                    totalValue.textContent = 'R$ ' + (subtotal + deliveryFee).toFixed(2);
+                    
+                    zipcodeInput.setAttribute('required', 'required');
+                    addressInput.setAttribute('required', 'required');
+                }
+                calcularTroco();
+            }
+        });
+    });
+    
+    document.getElementById('card-retirada').click();
+    
+    zipcodeInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 5) {
+            value = value.substring(0, 5) + '-' + value.substring(5, 8);
+        }
+        e.target.value = value;
+        
+        if (value.replace(/\D/g, '').length === 8) {
+            buscarCEP(value.replace(/\D/g, ''));
+        }
+    });
+    
+    function buscarCEP(cep) {
+        const loading = document.getElementById('cep-loading');
+        const infoAlert = document.getElementById('cep-info');
+        
+        loading.style.display = 'block';
+        infoAlert.className = 'alert alert-info';
+        infoAlert.innerHTML = '<i class="bi bi-info-circle"></i> Buscando endereço...';
+        
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (data.erro) {
+                    infoAlert.className = 'alert alert-danger';
+                    infoAlert.innerHTML = '<i class="bi bi-exclamation-triangle"></i> CEP não encontrado. Verifique e tente novamente.';
+                    addressInput.value = '';
+                } else {
+                    let endereco = '';
+                    if (data.logradouro) endereco += data.logradouro;
+                    if (data.bairro) endereco += (endereco ? ', ' : '') + data.bairro;
+                    if (data.localidade) endereco += (endereco ? ' - ' : '') + data.localidade;
+                    if (data.uf) endereco += '/' + data.uf;
+                    
+                    addressInput.value = endereco;
+                    addressInput.focus();
+                    
+                    infoAlert.className = 'alert alert-success';
+                    infoAlert.innerHTML = '<i class="bi bi-check-circle"></i> Endereço encontrado! Complete com o número e complemento se necessário.';
+                }
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                infoAlert.className = 'alert alert-danger';
+                infoAlert.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Erro ao buscar CEP. Tente novamente.';
+                console.error('Erro ao buscar CEP:', error);
+            });
+    }
+    
+    paymentMethod.addEventListener('change', function() {
+        if (this.value === 'dinheiro') {
+            trocoField.style.display = 'block';
+            calcularTroco();
+        } else {
+            trocoField.style.display = 'none';
+            trocoInfo.style.display = 'none';
+        }
+    });
+    
+    valorPagoInput.addEventListener('input', function() {
+        calcularTroco();
+    });
+    
+    function calcularTroco() {
+        const valorPago = parseFloat(valorPagoInput.value) || 0;
+        
+        if (paymentMethod.value === 'dinheiro' && valorPago > 0) {
+            const troco = valorPago - currentTotal;
+            
+            if (troco >= 0) {
+                trocoValor.textContent = 'R$ ' + troco.toFixed(2).replace('.', ',');
+                trocoInfo.style.display = 'block';
+                trocoInfo.className = 'alert alert-success mt-2';
+                
+                notesField.value = 'Troco para R$ ' + valorPago.toFixed(2).replace('.', ',');
+            } else {
+                trocoInfo.style.display = 'block';
+                trocoInfo.className = 'alert alert-warning mt-2';
+                trocoInfo.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Valor insuficiente! Faltam: R$ ' + Math.abs(troco).toFixed(2).replace('.', ',');
+            }
+        } else {
+            trocoInfo.style.display = 'none';
+        }
+    }
+});
+</script>
+{% endblock %}

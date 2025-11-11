@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Chat - Meatz Burger{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        max-width: 800px;
+        margin: 3rem auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .chat-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .chat-messages {
+        height: 500px;
+        overflow-y: auto;
+        padding: 2rem;
+        background: #f8f9fa;
+    }
+    
+    .message {
+        margin-bottom: 1rem;
+        display: flex;
+    }
+    
+    .message.user {
+        justify-content: flex-end;
+    }
+    
+    .message-bubble {
+        max-width: 70%;
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    .message.user .message-bubble {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .message.bot .message-bubble {
+        background: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .chat-input {
+        padding: 1.5rem;
+        background: white;
+        border-top: 1px solid #ddd;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="mb-3 mt-4">
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Início
+        </a>
+    </div>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h3><i class="fas fa-robot"></i> Chat com Assistente Virtual</h3>
+            <p class="mb-0">Pergunte sobre nosso cardápio e horários!</p>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-bubble">
+                    Olá! Bem-vindo ao Meatz Burger! Como posso ajudar você hoje? 🍔
+                </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <div class="input-group">
+                <input type="text" class="form-control" id="messageInput" placeholder="Digite sua mensagem...">
+                <button class="btn btn-primary" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i> Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const message = input.value.trim();
+    if(!message) return;
+    
+    const messagesDiv = document.getElementById('chatMessages');
+    
+    messagesDiv.innerHTML += `
+        <div class="message user">
+            <div class="message-bubble">${message}</div>
+        </div>
+    `;
+    
+    input.value = '';
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    
+    fetch('/chatbot/api/mensagem', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message: message})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.success) {
+            messagesDiv.innerHTML += `
+                <div class="message bot">
+                    <div class="message-bubble">${data.response}</div>
+                </div>
+            `;
+        } else {
+            messagesDiv.innerHTML += `
+                <div class="message bot">
+                    <div class="message-bubble">Desculpe, ocorreu um erro. Configure a GEMINI_API_KEY para ativar o chatbot.</div>
+                </div>
+            `;
+        }
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+}
+
+document.getElementById('messageInput').addEventListener('keypress', function(e) {
+    if(e.key === 'Enter') sendMessage();
+});
+</script>
+{% endblock %}

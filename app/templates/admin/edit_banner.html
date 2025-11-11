@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Editar Banner - Admin{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('admin.banners') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Banners
+        </a>
+    </div>
+    <h2>Editar Banner Promocional</h2>
+    <form method="POST" enctype="multipart/form-data" class="mt-4">
+        <div class="mb-3">
+            <label class="form-label">Título</label>
+            <input type="text" class="form-control" name="title" value="{{ banner.title }}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Descrição</label>
+            <textarea class="form-control" name="description" rows="2">{{ banner.description or '' }}</textarea>
+        </div>
+        {% if banner.image_url %}
+        <div class="mb-3">
+            <label class="form-label">Imagem Atual</label>
+            <div>
+                <img src="{{ banner.image_url }}" alt="{{ banner.title }}" style="max-width: 100%; max-height: 200px;">
+            </div>
+        </div>
+        {% endif %}
+        <div class="mb-3">
+            <label class="form-label">Nova Imagem do Banner</label>
+            <input type="file" class="form-control" name="image_file" accept="image/*">
+            <small class="text-muted">Deixe em branco para manter a imagem atual</small>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">URL da Imagem</label>
+            <input type="text" class="form-control" name="image_url" value="{{ banner.image_url or '' }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Link (opcional)</label>
+            <input type="text" class="form-control" name="link_url" value="{{ banner.link_url or '' }}" placeholder="https://...">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ordem de Exibição</label>
+            <input type="number" class="form-control" name="display_order" value="{{ banner.display_order }}">
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" name="active" id="active" {{ 'checked' if banner.active else '' }}>
+            <label class="form-check-label" for="active">Banner Ativo</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        <a href="{{ url_for('admin.banners') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

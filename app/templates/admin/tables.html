@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Mesas - Admin{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Dashboard
+        </a>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gerenciar Mesas</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTableModal">Adicionar Mesa</button>
+    </div>
+    
+    <div class="row">
+        {% for table in tables %}
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3>Mesa {{ table.number }}</h3>
+                    <p>Capacidade: {{ table.capacity }} pessoas</p>
+                    <span class="badge bg-{{ 'success' if table.status == 'livre' else 'danger' }}">
+                        {{ table.status|title }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="modal fade" id="addTableModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adicionar Mesa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.add_table') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Número da Mesa</label>
+                        <input type="number" class="form-control" name="number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Capacidade</label>
+                        <input type="number" class="form-control" name="capacity" value="4" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

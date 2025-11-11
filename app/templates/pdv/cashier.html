@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Caixa - Meatz Burger{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('pdv.index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para PDV
+        </a>
+    </div>
+    <h2>Caixa - Resumo do Dia</h2>
+    
+    {% if pending_orders %}
+    <div class="alert alert-warning mt-3">
+        <h5><i class="fas fa-clock"></i> Pedidos Aguardando Confirmação de Pagamento</h5>
+        <table class="table table-sm mt-2">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Mesa</th>
+                    <th>Total</th>
+                    <th>Método</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pending in pending_orders %}
+                <tr>
+                    <td>{{ pending.id }}</td>
+                    <td>Mesa {{ pending.table_id }}</td>
+                    <td>R$ {{ "%.2f"|format(pending.total) }}</td>
+                    <td>{{ pending.payment_method }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success" onclick="confirmPayment({{ pending.id }})">
+                            <i class="fas fa-check"></i> Confirmar
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">R$ {{ "%.2f"|format(total_cash) }}</h3>
+                    <p>Dinheiro</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-primary">R$ {{ "%.2f"|format(total_card) }}</h3>
+                    <p>Cartão</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-info">R$ {{ "%.2f"|format(total_pix) }}</h3>
+                    <p>PIX</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-warning">R$ {{ "%.2f"|format(total_day) }}</h3>
+                    <p>Total</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <h4>Pedidos do Dia</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Mesa</th>
+                    <th>Total</th>
+                    <th>Pagamento</th>
+                    <th>Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.table.number if order.table else '-' }}</td>
+                    <td>R$ {{ "%.2f"|format(order.total) }}</td>
+                    <td>{{ order.payment_method }}</td>
+                    <td>{{ order.created_at.strftime('%H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function confirmPayment(orderId) {
+    if (!confirm('Confirmar o recebimento do pagamento?')) return;
+    
+    fetch(`/pdv/caixa/confirmar-pagamento/${orderId}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Erro: ' + data.error);
+        }
+    });
+}
+</script>
+{% endblock %}

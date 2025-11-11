@@ -1,0 +1,743 @@
+{% extends "base.html" %}
+{% block title %}KDS - Sistema de Cozinha{% endblock %}
+{% block content %}
+<style>
+    body {
+        background: #1a1a1a;
+        color: #ffffff;
+    }
+    
+    .kds-container {
+        padding: 1rem;
+        max-width: none;
+    }
+    
+    .back-button {
+        margin-bottom: 1rem;
+    }
+    
+    .kds-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--dark-brown));
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+    
+    .kds-header h1 {
+        margin: 0;
+        color: white;
+        font-weight: 700;
+        font-size: 2rem;
+    }
+    
+    .kds-stats {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .stat-badge {
+        background: rgba(255,255,255,0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+    
+    .kds-columns {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .kds-column {
+        background: #2a2a2a;
+        border-radius: 15px;
+        padding: 1rem;
+        min-height: 500px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+    
+    .column-header {
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        text-align: center;
+        font-size: 1.2rem;
+    }
+    
+    .column-new .column-header {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+    
+    .column-preparing .column-header {
+        background: linear-gradient(135deg, #f2994a, #f2c94c);
+    }
+    
+    .column-ready .column-header {
+        background: linear-gradient(135deg, #56ab2f, #a8e063);
+    }
+    
+    .order-card {
+        background: #333;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 5px solid;
+        transition: all 0.3s ease;
+        animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .order-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    
+    .order-card.priority-low { border-left-color: #4facfe; }
+    .order-card.priority-medium { border-left-color: #f2c94c; }
+    .order-card.priority-high { border-left-color: #f2994a; }
+    .order-card.priority-critical { 
+        border-left-color: #eb3349;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(235, 51, 73, 0.4); }
+        50% { box-shadow: 0 0 0 10px rgba(235, 51, 73, 0); }
+    }
+    
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #444;
+    }
+    
+    .order-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    .order-time {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    
+    .order-time.critical { color: #eb3349; }
+    .order-time.high { color: #f2994a; }
+    .order-time.medium { color: #f2c94c; }
+    .order-time.low { color: #4facfe; }
+    
+    .order-info {
+        color: #aaa;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .order-items {
+        margin-top: 1rem;
+    }
+    
+    .order-item {
+        background: #2a2a2a;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .item-info {
+        flex: 1;
+    }
+    
+    .item-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .item-quantity {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-right: 0.5rem;
+    }
+    
+    .item-notes {
+        color: #f2c94c;
+        font-size: 0.85rem;
+        font-style: italic;
+        margin-top: 0.25rem;
+    }
+    
+    .item-section {
+        background: rgba(233, 152, 86, 0.2);
+        color: var(--primary-color);
+        padding: 0.25rem 0.5rem;
+        border-radius: 5px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .item-status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .item-status-badge:hover {
+        transform: scale(1.05);
+    }
+    
+    .status-novo { background: #4facfe; color: white; }
+    .status-preparando { background: #f2994a; color: white; }
+    .status-pronto { background: #56ab2f; color: white; }
+    .status-entregue { background: #667eea; color: white; }
+    
+    .order-actions {
+        margin-top: 1rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .btn-kds {
+        flex: 1;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-kds:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .btn-start {
+        background: linear-gradient(135deg, #f2994a, #f2c94c);
+        color: white;
+    }
+    
+    .btn-ready {
+        background: linear-gradient(135deg, #56ab2f, #a8e063);
+        color: white;
+    }
+    
+    .btn-deliver {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+    
+    .filters {
+        background: #2a2a2a;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--primary-color);
+        background: transparent;
+        color: var(--primary-color);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-btn.active,
+    .filter-btn:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .empty-column {
+        text-align: center;
+        padding: 3rem;
+        color: #666;
+    }
+    
+    .refresh-indicator {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(86, 171, 47, 0.9);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+
+<div class="kds-container">
+    <div class="back-button">
+        <a href="{{ url_for('pdv.index') }}" class="btn btn-outline-light">
+            <i class="fas fa-arrow-left"></i> Voltar para PDV
+        </a>
+    </div>
+    <div class="kds-header">
+        <h1><i class="fas fa-tv"></i> Sistema de Display da Cozinha (KDS)</h1>
+        <div class="kds-stats">
+            <div class="stat-badge">
+                <i class="fas fa-clock"></i> <span id="current-time"></span>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-list"></i> {{ new_orders|length }} Novos
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-fire"></i> {{ preparing_orders|length }} Preparando
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-check"></i> {{ ready_orders|length }} Prontos
+            </div>
+        </div>
+    </div>
+    
+    <div class="filters">
+        <button class="filter-btn active" data-section="all">Todas Seções</button>
+        {% for section in sections %}
+        <button class="filter-btn" data-section="{{ section }}">{{ section|title }}</button>
+        {% endfor %}
+    </div>
+    
+    <div class="kds-columns">
+        <!-- Coluna: Novos Pedidos -->
+        <div class="kds-column column-new">
+            <div class="column-header">
+                <i class="fas fa-plus-circle"></i> NOVOS PEDIDOS
+            </div>
+            <div class="orders-container">
+                {% if new_orders %}
+                    {% for data in new_orders %}
+                    <div class="order-card priority-{{ data.priority_class }}" data-order-id="{{ data.order.id }}">
+                        <div class="order-header">
+                            <div class="order-number">#{{ data.order.id }}</div>
+                            <div class="order-time {{ data.priority_class }}">
+                                <i class="fas fa-clock"></i>
+                                {{ data.age_minutes }}min
+                            </div>
+                        </div>
+                        <div class="order-info">
+                            {% if data.order.table_id %}
+                            <i class="fas fa-table"></i> Mesa {{ data.order.table_id }}
+                            {% elif data.order.order_type == 'entrega' %}
+                            <i class="fas fa-motorcycle"></i> Entrega
+                            {% else %}
+                            <i class="fas fa-shopping-bag"></i> Retirada
+                            {% endif %}
+                        </div>
+                        <div class="order-items">
+                            {% for item in data['items'] %}
+                            <div class="order-item" data-section="{{ item.prep_section or 'geral' }}">
+                                <div class="item-info">
+                                    <div class="item-name">
+                                        <span class="item-quantity">{{ item.quantity }}x</span>
+                                        {{ item.product_name }}
+                                    </div>
+                                    {% if item.prep_section %}
+                                    <div class="item-section">{{ item.prep_section }}</div>
+                                    {% endif %}
+                                    {% if item.notes %}
+                                    <div class="item-notes"><i class="fas fa-sticky-note"></i> {{ item.notes }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="item-status-badge status-{{ item.status }}" onclick="updateItemStatus({{ item.id }}, 'preparando')">
+                                    {{ item.status }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn-kds btn-start" onclick="updateOrderStatus({{ data.order.id }}, 'preparando')">
+                                <i class="fas fa-play"></i> Iniciar
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-column">
+                        <i class="fas fa-inbox fa-3x"></i>
+                        <p>Nenhum pedido novo</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Coluna: Preparando -->
+        <div class="kds-column column-preparing">
+            <div class="column-header">
+                <i class="fas fa-fire"></i> EM PREPARAÇÃO
+            </div>
+            <div class="orders-container">
+                {% if preparing_orders %}
+                    {% for data in preparing_orders %}
+                    <div class="order-card priority-{{ data.priority_class }}" data-order-id="{{ data.order.id }}">
+                        <div class="order-header">
+                            <div class="order-number">#{{ data.order.id }}</div>
+                            <div class="order-time {{ data.priority_class }}">
+                                <i class="fas fa-clock"></i>
+                                {{ data.age_minutes }}min
+                            </div>
+                        </div>
+                        <div class="order-info">
+                            {% if data.order.table_id %}
+                            <i class="fas fa-table"></i> Mesa {{ data.order.table_id }}
+                            {% elif data.order.order_type == 'entrega' %}
+                            <i class="fas fa-motorcycle"></i> Entrega
+                            {% else %}
+                            <i class="fas fa-shopping-bag"></i> Retirada
+                            {% endif %}
+                        </div>
+                        <div class="order-items">
+                            {% for item in data['items'] %}
+                            <div class="order-item" data-section="{{ item.prep_section or 'geral' }}">
+                                <div class="item-info">
+                                    <div class="item-name">
+                                        <span class="item-quantity">{{ item.quantity }}x</span>
+                                        {{ item.product_name }}
+                                    </div>
+                                    {% if item.prep_section %}
+                                    <div class="item-section">{{ item.prep_section }}</div>
+                                    {% endif %}
+                                    {% if item.notes %}
+                                    <div class="item-notes"><i class="fas fa-sticky-note"></i> {{ item.notes }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="item-status-badge status-{{ item.status }}" onclick="updateItemStatus({{ item.id }}, '{{ 'pronto' if item.status == 'preparando' else 'preparando' }}')">
+                                    {{ item.status }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn-kds btn-ready" onclick="updateOrderStatus({{ data.order.id }}, 'pronto')">
+                                <i class="fas fa-check"></i> Marcar Pronto
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-column">
+                        <i class="fas fa-fire fa-3x"></i>
+                        <p>Nenhum pedido em preparação</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Coluna: Prontos -->
+        <div class="kds-column column-ready">
+            <div class="column-header">
+                <i class="fas fa-check-circle"></i> PRONTOS
+            </div>
+            <div class="orders-container">
+                {% if ready_orders %}
+                    {% for data in ready_orders %}
+                    <div class="order-card priority-{{ data.priority_class }}" data-order-id="{{ data.order.id }}">
+                        <div class="order-header">
+                            <div class="order-number">#{{ data.order.id }}</div>
+                            <div class="order-time {{ data.priority_class }}">
+                                <i class="fas fa-clock"></i>
+                                {{ data.age_minutes }}min
+                            </div>
+                        </div>
+                        <div class="order-info">
+                            {% if data.order.table_id %}
+                            <i class="fas fa-table"></i> Mesa {{ data.order.table_id }}
+                            {% elif data.order.order_type == 'entrega' %}
+                            <i class="fas fa-motorcycle"></i> Entrega
+                            {% else %}
+                            <i class="fas fa-shopping-bag"></i> Retirada
+                            {% endif %}
+                        </div>
+                        <div class="order-items">
+                            {% for item in data['items'] %}
+                            <div class="order-item" data-section="{{ item.prep_section or 'geral' }}">
+                                <div class="item-info">
+                                    <div class="item-name">
+                                        <span class="item-quantity">{{ item.quantity }}x</span>
+                                        {{ item.product_name }}
+                                    </div>
+                                    {% if item.prep_section %}
+                                    <div class="item-section">{{ item.prep_section }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="item-status-badge status-{{ item.status }}">
+                                    {{ item.status }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn-kds btn-deliver" onclick="updateOrderStatus({{ data.order.id }}, 'entregue')">
+                                <i class="fas fa-hand-holding"></i> Entregar
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-column">
+                        <i class="fas fa-check-circle fa-3x"></i>
+                        <p>Nenhum pedido pronto</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="refresh-indicator" id="refreshIndicator">
+    <i class="fas fa-sync fa-spin"></i> Atualizando...
+</div>
+
+<audio id="newOrderSound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjOJ0fPTgjMGHm7A7+OZUQ0NVqzn77BfGAU+ld7xwXEkBSp8zPDejj0JGGi56+ehUhAMUKvg8bllHAY7k9Typ3cpBSl6ye/ijUAKFFyx6OKlUxEM T6nh8LhjHQU3jc/z0H0uBSJ2xO/dlj4KElyx5+KmVRILTqbh8LdkHgU3jM7z0X0vBSJ2xO/dlT4KE1yw5+KlVRILTqbh8LdkHgU3jM7z0X0vBSJ2xO/dlT4KE1yw5+KlVRILTqbh8LdkHgU3jM7z0X0vBSJ2xO/dlT4K" type="audio/wav">
+</audio>
+
+<script>
+// Atualizar relógio
+function updateClock() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+    document.getElementById('current-time').textContent = timeStr;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// Atualizar status do pedido
+function updateOrderStatus(orderId, newStatus) {
+    fetch(`/pdv/api/pedido/${orderId}/status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => console.error('Erro:', error));
+}
+
+// Atualizar status do item
+function updateItemStatus(itemId, newStatus) {
+    fetch(`/pdv/api/item/${itemId}/status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => console.error('Erro:', error));
+}
+
+// Filtros por seção
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Atualizar botões ativos
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const section = this.dataset.section;
+        
+        // Filtrar items
+        document.querySelectorAll('.order-item').forEach(item => {
+            if (section === 'all' || item.dataset.section === section) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        // Esconder cards vazios
+        document.querySelectorAll('.order-card').forEach(card => {
+            const visibleItems = Array.from(card.querySelectorAll('.order-item')).filter(item => item.style.display !== 'none');
+            card.style.display = visibleItems.length > 0 ? 'block' : 'none';
+        });
+    });
+});
+
+// Auto-refresh com polling JSON a cada 5 segundos
+let lastNewOrders = {{ new_orders|length }};
+let lastPreparingOrders = {{ preparing_orders|length }};
+let lastReadyOrders = {{ ready_orders|length }};
+let lastOrderIds = new Set();
+
+// Popular conjunto inicial de IDs
+{% for order in new_orders + preparing_orders + ready_orders %}
+lastOrderIds.add({{ order.order.id }});
+{% endfor %}
+
+function updateKDS() {
+    const indicator = document.getElementById('refreshIndicator');
+    indicator.style.display = 'block';
+    
+    fetch('{{ url_for("pdv.kds_api") }}')
+        .then(response => response.json())
+        .then(data => {
+            // Detectar novos pedidos
+            let hasNewOrders = false;
+            const newOrderIds = new Set();
+            
+            [...data.new, ...data.preparing, ...data.ready].forEach(order => {
+                newOrderIds.add(order.id);
+                if (!lastOrderIds.has(order.id)) {
+                    hasNewOrders = true;
+                }
+            });
+            
+            // Tocar som se houver novos pedidos
+            if (hasNewOrders) {
+                const audio = document.getElementById('newOrderSound');
+                audio.play().catch(e => console.log('Erro ao tocar som:', e));
+            }
+            
+            lastOrderIds = newOrderIds;
+            lastNewOrders = data.new.length;
+            lastPreparingOrders = data.preparing.length;
+            lastReadyOrders = data.ready.length;
+            
+            // Atualizar badges de contagem
+            document.querySelector('.status-badge.bg-danger').textContent = data.new.length;
+            document.querySelector('.status-badge.bg-warning').textContent = data.preparing.length;
+            document.querySelector('.status-badge.bg-success').textContent = data.ready.length;
+            
+            // Função helper para sanitizar HTML
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            // Função helper para criar card HTML
+            function createOrderCard(order) {
+                const priorityColors = {
+                    'low': '#4CAF50',
+                    'medium': '#FF9800',
+                    'high': '#FF5722',
+                    'critical': '#D32F2F'
+                };
+                
+                let itemsHTML = '';
+                order.items.forEach(item => {
+                    const safeProductName = escapeHtml(item.product_name);
+                    const safeNotes = item.notes ? escapeHtml(item.notes) : '';
+                    const safeSection = escapeHtml(item.prep_section || 'geral');
+                    
+                    itemsHTML += `
+                        <div class="order-item" data-section="${safeSection}">
+                            <div class="item-quantity">${item.quantity}x</div>
+                            <div class="item-details">
+                                <div class="item-name">${safeProductName}</div>
+                                ${safeNotes ? `<div class="item-notes">${safeNotes}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                const safeTableNumber = escapeHtml(String(order.table_number));
+                
+                return `
+                    <div class="order-card" data-order-id="${order.id}" style="border-left-color: ${priorityColors[order.priority_class]}">
+                        <div class="order-header">
+                            <span class="order-number">#${order.id}</span>
+                            <span class="order-table">Mesa ${safeTableNumber}</span>
+                            <span class="order-time">${order.age_minutes} min</span>
+                        </div>
+                        <div class="order-items">
+                            ${itemsHTML}
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn-secondary" onclick="updateOrderStatus(${order.id}, 'preparando')">Preparar</button>
+                            <button class="btn-primary" onclick="updateOrderStatus(${order.id}, 'pronto')">Pronto</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Atualizar seções
+            const newSection = document.querySelector('.status-column:nth-child(1) .orders-grid');
+            const preparingSection = document.querySelector('.status-column:nth-child(2) .orders-grid');
+            const readySection = document.querySelector('.status-column:nth-child(3) .orders-grid');
+            
+            if (newSection) {
+                newSection.innerHTML = data.new.map(createOrderCard).join('') || 
+                    '<div class="empty-state"><i data-feather="inbox"></i><p>Nenhum pedido novo</p></div>';
+            }
+            
+            if (preparingSection) {
+                preparingSection.innerHTML = data.preparing.map(createOrderCard).join('') || 
+                    '<div class="empty-state"><i data-feather="inbox"></i><p>Nenhum pedido em preparo</p></div>';
+            }
+            
+            if (readySection) {
+                readySection.innerHTML = data.ready.map(createOrderCard).join('') || 
+                    '<div class="empty-state"><i data-feather="inbox"></i><p>Nenhum pedido pronto</p></div>';
+            }
+            
+            // Recarregar ícones do Feather
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+            
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 500);
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar KDS:', error);
+            indicator.style.display = 'none';
+        });
+}
+
+// Atualizar a cada 5 segundos
+setInterval(updateKDS, 5000);
+</script>
+{% endblock %}

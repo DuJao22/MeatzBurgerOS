@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Adicionar Categoria - Admin{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('admin.categories') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Categorias
+        </a>
+    </div>
+    <h2>Adicionar Categoria</h2>
+    <form method="POST" class="mt-4">
+        <div class="mb-3">
+            <label class="form-label">Nome</label>
+            <input type="text" class="form-control" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Descrição</label>
+            <textarea class="form-control" name="description" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">URL da Imagem</label>
+            <input type="text" class="form-control" name="image_url">
+        </div>
+        <button type="submit" class="btn btn-primary">Adicionar</button>
+        <a href="{{ url_for('admin.categories') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

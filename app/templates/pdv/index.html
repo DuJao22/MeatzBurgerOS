@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}PDV - Meatz Burger{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Sistema PDV</h2>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Mesas</h5>
+                    <div class="row">
+                        {% for table in tables %}
+                        <div class="col-6 mb-2">
+                            <a href="{{ url_for('pdv.table_order', table_id=table.id) }}" class="btn btn-{{ 'success' if table.status == 'livre' else 'danger' }} w-100">
+                                Mesa {{ table.number }}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Atalhos</h5>
+                    <a href="{{ url_for('pdv.kitchen') }}" class="btn btn-warning">Cozinha</a>
+                    <a href="{{ url_for('pdv.cashier') }}" class="btn btn-info">Caixa</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

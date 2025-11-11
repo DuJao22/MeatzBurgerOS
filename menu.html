@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio - BurgerLoft</title>
+    <link rel="icon" href="/public/images/logo.svg">
+    <link rel="stylesheet" href="/src/css/style.css">
+    <script type="module" src="/src/js/main.js"></script>
+</head>
+<body class="bg-cream">
+
+    <!-- Navbar -->
+    <header id="main-header" class="sticky top-0 z-50"></header>
+
+    <main>
+        <!-- Menu Header -->
+        <section class="bg-brown-dark py-16 text-center text-white">
+            <div class="container mx-auto px-4">
+                <h1 class="text-5xl md:text-6xl font-extrabold uppercase">Nosso Cardápio</h1>
+                <p class="mt-4 text-lg text-gray-300">Explore nossos sabores e escolha o seu favorito.</p>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                <!-- Category Filters -->
+                <div id="category-filters" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">
+                    <button class="filter-btn active" data-filter="all">Todos</button>
+                    <button class="filter-btn" data-filter="burgers">Burgers</button>
+                    <button class="filter-btn" data-filter="acompanhamentos">Acompanhamentos</button>
+                    <button class="filter-btn" data-filter="bebidas">Bebidas</button>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Product items will be injected by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="main-footer"></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const products = [
+                { id: 1, name: 'Classic Burger', category: 'burgers', price: '28,00', desc: 'Pão brioche, burger 150g, queijo prato, alface, tomate e molho especial.', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800' },
+                { id: 2, name: 'Bacon Deluxe', category: 'burgers', price: '35,00', desc: 'O dobro de bacon, pão australiano, burger 180g, cheddar cremoso e cebola caramelizada.', img: 'https://images.unsplash.com/photo-1603614588335-0c0b318DB6a7?q=80&w=800' },
+                { id: 3, name: 'Chicken Crisp', category: 'burgers', price: '30,00', desc: 'Frango empanado super crocante, pão de gergelim, maionese de alho e salada fresca.', img: 'https://images.unsplash.com/photo-1582196016295-f8c8ac42125a?q=80&w=800' },
+                { id: 4, name: 'Veggie Power', category: 'burgers', price: '32,00', desc: 'Burger de grão de bico, pão integral, queijo branco, rúcula e tomate seco.', img: 'https://images.unsplash.com/photo-1525059696034-4967a8e1d3b9?q=80&w=800' },
+                { id: 5, name: 'Batata Frita', category: 'acompanhamentos', price: '15,00', desc: 'Porção generosa de batatas fritas crocantes e sequinhas.', img: 'https://images.unsplash.com/photo-1598679253544-2c9740991353?q=80&w=800' },
+                { id: 6, name: 'Onion Rings', category: 'acompanhamentos', price: '18,00', desc: 'Anéis de cebola empanados, acompanhados de molho barbecue.', img: 'https://images.unsplash.com/photo-1549950576-529468356EZw?q=80&w=800' },
+                { id: 7, name: 'Coca-Cola', category: 'bebidas', price: '7,00', desc: 'Lata 350ml, geladíssima.', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32a64ba?q=80&w=800' },
+                { id: 8, name: 'Suco de Laranja', category: 'bebidas', price: '9,00', desc: 'Natural, feito na hora.', img: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=800' },
+            ];
+
+            const grid = document.getElementById('products-grid');
+            const filters = document.querySelectorAll('.filter-btn');
+
+            const renderProducts = (filter = 'all') => {
+                grid.innerHTML = '';
+                const filteredProducts = filter === 'all' ? products : products.filter(p => p.category === filter);
+
+                if (filteredProducts.length === 0) {
+                    grid.innerHTML = `<p class="col-span-full text-center text-brown-light">Nenhum produto encontrado nesta categoria.</p>`;
+                    return;
+                }
+
+                filteredProducts.forEach(product => {
+                    const card = `
+                        <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden group transform transition-all duration-300 hover:-translate-y-2" data-category="${product.category}">
+                            <div class="relative">
+                                <img src="${product.img}" alt="${product.name}" class="w-full h-64 object-cover">
+                                <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button class="bg-primary text-white font-bold uppercase py-3 px-6 rounded-full transition-transform hover:scale-105">
+                                        Adicionar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-2xl font-bold text-brown-dark">${product.name}</h3>
+                                <p class="mt-2 text-brown-light h-12">${product.desc}</p>
+                                <div class="mt-4 flex justify-between items-center">
+                                    <span class="text-2xl font-extrabold text-primary">R$ ${product.price}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += card;
+                });
+            };
+
+            filters.forEach(button => {
+                button.addEventListener('click', () => {
+                    filters.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderProducts(button.dataset.filter);
+                });
+            });
+
+            renderProducts();
+        });
+
+        // Style for filter buttons
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .filter-btn {
+                padding: 0.75rem 1.5rem;
+                border: 2px solid var(--tw-color-brown-dark);
+                background: white;
+                color: var(--tw-color-brown-dark);
+                border-radius: 9999px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 700;
+                font-size: 15px;
+                text-transform: uppercase;
+                transition: all 0.3s;
+                cursor: pointer;
+            }
+            .filter-btn:hover {
+                background: var(--tw-color-brown-dark);
+                color: white;
+            }
+            .filter-btn.active {
+                background: var(--tw-color-brown-dark);
+                color: white;
+                box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

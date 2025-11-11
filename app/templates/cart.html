@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Carrinho - Meatz Burger{% endblock %}
+{% block extra_css %}
+<style>
+    .cart-container {
+        background-color: var(--background-cream);
+        padding: 3rem 0;
+        min-height: 60vh;
+    }
+    
+    .cart-container h2 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 900;
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+    }
+    
+    .table {
+        background-color: white;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    
+    .table thead {
+        background-color: var(--dark-brown);
+        color: white;
+    }
+    
+    .table thead th {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 15px;
+    }
+    
+    .table tbody td {
+        font-family: 'Montserrat', sans-serif;
+        padding: 15px;
+        vertical-align: middle;
+    }
+    
+    .table tfoot th {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--dark-brown);
+        padding: 15px;
+    }
+    
+    .btn-remove {
+        background-color: var(--dark-brown);
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+    
+    .btn-remove:hover {
+        background-color: var(--accent-color);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="cart-container">
+    <div class="container">
+        <div class="mb-3">
+            <a href="{{ url_for('main.menu') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar para Cardápio
+            </a>
+        </div>
+        <h2>Meu Carrinho</h2>
+    {% if items %}
+    <div class="table-responsive mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Subtotal</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>R$ {{ "%.2f"|format(item.product.price) }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>R$ {{ "%.2f"|format(item.subtotal) }}</td>
+                    <td>
+                        <button class="btn-remove" onclick="removeItem({{ item.product.id }})">
+                            <i class="fas fa-trash"></i> Remover
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3">Total:</th>
+                    <th>R$ {{ "%.2f"|format(total) }}</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="text-end">
+        <a href="{{ url_for('main.checkout') }}" class="btn btn-primary btn-lg">Finalizar Pedido</a>
+    </div>
+    {% else %}
+    <div class="text-center mt-5" style="background: white; padding: 3rem; border-radius: 20px;">
+        <i class="fas fa-shopping-cart" style="font-size: 60px; color: var(--primary-color); margin-bottom: 1rem;"></i>
+        <p style="font-family: 'Montserrat', sans-serif; font-size: 18px; color: var(--dark-brown);">Seu carrinho está vazio.</p>
+        <a href="{{ url_for('main.menu') }}" class="btn btn-primary mt-3">Ver Cardápio</a>
+    </div>
+    {% endif %}
+    </div>
+</div>
+<script>
+function removeItem(productId) {
+    fetch('/api/cart/remove', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({product_id: productId})
+    })
+    .then(() => location.reload());
+}
+</script>
+{% endblock %}

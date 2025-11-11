@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin BurgerLoft</title>
+    <link rel="icon" href="/public/images/logo.svg">
+    <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body class="bg-gray-100">
+
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-brand-black text-gray-300 flex flex-col">
+            <div class="h-20 flex items-center justify-center border-b border-gray-700">
+                <a href="/index.html" class="flex items-center gap-2">
+                    <img src="/public/images/logo.svg" alt="BurgerLoft Logo" class="h-8 w-auto">
+                    <span class="text-white font-display font-bold text-xl">BurgerLoft</span>
+                </a>
+            </div>
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="/admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/20 text-primary font-bold">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWxheW91dC1kYXNoYm9hcmQiPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjkiIHg9IjMiIHk9IjMiIHJ4PSIxIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iNSIgeD0iMTQiIHk9IjMiIHJ4PSIxIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iOSIgeD0iMTQiIHk9IjEyIiByeD0iMSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjUiIHg9IjMiIHk9IjE2IiByeD0iMSIvPjwvc3ZnPg==" class="h-5 w-5" />
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1dmdPg==" class="h-5 w-5" />
+                    <span>Pedidos</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXV0ZW5zaWxzLWNyb3NzZWQiPjxwYXRoIGQ9Im02IDIxIDQtNE0xNiAxMWw0LTQiLz48cGF0aCBkPSJNMTQuNSAzLjVjLTEuNS0xLjUtMy0xLjUtNC41IDAtNCA0IDAgNC41IDAgNC41Ii8+PHBhdGggZD0ibTEyIDE1IDEtMXoiLz48cGF0aCBkPSJNMy40IDE3LjYgOCAxMyAxMC41IDEwLjUgMTEgMTAgNyAxNHoiLz48L3N2Zz4=" class="h-5 w-5" />
+                    <span>Produtos</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXVzZXJzIj48cGF0aCBkPSJNMTYgMjF2LTJhNCA0IDAgMCAwLTQtNEg4YTQgNCAwIDAgMC00IDR2MiIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iNyIgcj0iNCIvPjwvc3ZnPg==" class="h-5 w-5" />
+                    <span>Clientes</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXNldHRpbmdzLTIiPjxwYXRoIGQ9Im0yMCAxOC4yLTMuNC0zLjQiLz48cGF0aCBkPSJtMTggMjAuMy0zLjQtMy40Ii8+PHBhdGggZD0ibTE4IDMuOCAzLjQgMy40Ii8+PHBhdGggZD0ibTIwIDUuOCAzLjQgMy40Ii8+PHBhdGggZD0ibTQgMTguMiAzLjQgMy40Ii8+PHBhdGggZD0ibTYgMjAuMyAzLjQgMy40Ii8+PHBhdGggZD0ibTYgMy44LTMuNCAzLjQiLz48cGF0aCBkPSJtNCA1LjgtMy40IDMuNCIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjIiLz48cGF0aCBkPSJtMTIgNSA1LjMgMyIvPjxwYXRoIGQ9Im0xMiAxOSA1LjMgMyIvPjxwYXRoIGQ9Im02LjcgMTcgNS4zLTMiLz48cGF0aCBkPSJtNi43IDcgNS4zIDMiLz48L3N2Zz4=" class="h-5 w-5" />
+                    <span>Configurações</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-700">
+                <a href="/login.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors">
+                     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWxvZy1vdXQiPjxwYXRoIGQ9Ik05IDIxSDVhMiAyIDAgMCAxLTItMlY1YTIgMiAwIDAgMSAyLTJoNG03IDhsNC00LTQtNCIvPjxwYXRoIGQ9Ik0xMSAxMmgxMCIvPjwvc3ZnPg==" class="h-5 w-5" />
+                    <span>Sair</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Topbar -->
+            <header class="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-brown-dark">Dashboard</h1>
+                    <p class="text-sm text-gray-500">Bem-vindo, Administrador!</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="relative text-gray-500 hover:text-brown-dark">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWJlbGwiPjxwYXRoIGQ9Ik02IDEwLjVBMi41IDIuNSAwIDAgMSA4LjUgOHYtMWExLjUgMS41IDAgMSAxIDMgMHYxYTIuNSAyLjUgMCAwIDEgMi41IDIuNUgxOGEyIDIgMCAwIDEtMiAyvMTJhMiAyIDAgMCAxLTIgMkg4YTIgMiAwIDAgMS0yLTJ2LTJhMiAyIDAgMCAxIDItMnpNNiAxMEg0YTIgMiAwIDAgMC0yIDJ2MmEyIDIgMCAwIDAgMiAyIi8+PHBhdGggZD0iTTE4IDEwaDJhMiAyIDAgMCAxIDIgMnYyYTIgMiAwIDAgMS0yIDIiLz48cGF0aCBkPSJNMTQgM3YxIi8+PHBhdGggZD0iTTEwIDN2MSIvPjxwYXRoIGQ9Ik0xOC41IDVhLjUuNSAwIDAgMS0uNS41aC0xMWExIDEgMCAwIDEtMS0xdi0xYTEgMSAwIDAgMSAxLTFoMTFhLjUuNSAwIDAgMSAuNS41WiIvPjwvc3ZnPg==" class="h-6 w-6" />
+                        <span class="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <img src="/public/images/avatar.jpg" alt="Admin" class="h-10 w-10 rounded-full object-cover">
+                        <div>
+                            <p class="font-semibold text-sm text-brown-dark">João Layon</p>
+                            <p class="text-xs text-gray-500">Admin</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <div class="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center">
+                             <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNFTTk4NTYiIHN0cm9rZS1widthoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWRvbGxhci1zaWduIj48cGF0aCBkPSJNMTIgMWwzLjA5IDYuM2w2LjkxIDEuMDFsLTUgNC44N2wxLjE4IDYuODdMMTIgMTcuNzdsLTYuMTggMy4yNWwxLjE4LTYuODdMMS45OSA4LjMybDUuOTEtLjg3WiIvPjwvc3ZnPg==" class="h-7 w-7 text-primary" />
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Receita Total</p>
+                            <p id="total-revenue" class="text-2xl font-bold text-brown-dark">R$ 0,00</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <div class="h-14 w-14 rounded-full bg-green-500/10 flex items-center justify-center">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyMmM1NWUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1zaG9wcGluZy1jYXJ0Ij48Y2lyY2xlIGN4PSI4IiBjeT0iMjEiIHI9IjEiLz48Y2lyY2xlIGN4PSIxNyIgY3k9IjIxIiByPSIxIi8+PHBhdGggZD0iTTUuMTcgMS43NmExIDEgMCAwIDAgLjgyIDEuNzZsMi43IDEzLjA5YTEgMSAwIDAgMCAuOTYgLjgzaDkuMDhhMSAxIDAgMCAwIC45Ni0uODNsMS45My05LjI0YTEgMSAwIDAgMC0uOTYtMS4yNUg2LjE0Ii8+PC9zdmc+" class="h-7 w-7 text-green-500" />
+                        </div>
+<div>
+                            <p class="text-sm text-gray-500">Pedidos Hoje</p>
+                            <p id="today-orders" class="text-2xl font-bold text-brown-dark">0</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <div class="h-14 w-14 rounded-full bg-blue-500/10 flex items-center justify-center">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMzYjg2ZWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS11c2VyIj48cGF0aCBkPSJNMTYgMjF2LTJhNCA0IDAgMCAwLTQtNEg4YTQgNCAwIDAgMC00IDR2MiIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iNyIgcj0iNCIvPjwvc3ZnPg==" class="h-7 w-7 text-blue-500" />
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Novos Clientes</p>
+                            <p id="new-customers" class="text-2xl font-bold text-brown-dark">0</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <div class="h-14 w-14 rounded-full bg-yellow-500/10 flex items-center justify-center">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlYWJiMzciIHN0cm9rZS1widthoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXN0YXIiPjxwYXRoIGQ9Ik0xMiAxbDMuMDkgNi4zbDYuOTEgMS4wMWwtNSA0Ljg3bDEuMTggNi44N0wxMiAxNy43N2wtNi4xOCAzLjI1bDEuMTgtNi44N0wxLjk5IDguMzJsNi45MS0xLjAxWiIvPjwvc3ZnPg==" class="h-7 w-7 text-yellow-500" />
+                        </div>
+                        <div>
+                            <p class="text_sm text-gray-500">Avaliação Média</p>
+                            <p id="avg-rating" class="text-2xl font-bold text-brown-dark">0.0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="font-bold text-lg text-brown-dark mb-4">Vendas nos Últimos 7 Dias</h3>
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="font-bold text-lg text-brown-dark mb-4">Categorias Mais Vendidas</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="bg-white p-6 rounded-xl shadow-md mt-6">
+                    <h3 class="font-bold text-lg text-brown-dark mb-4">Pedidos Recentes</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b border-gray-200 text-sm text-gray-500">
+                                    <th class="py-3 px-4 font-medium">Pedido ID</th>
+                                    <th class="py-3 px-4 font-medium">Cliente</th>
+                                    <th class="py-3 px-4 font-medium">Total</th>
+                                    <th class="py-3 px-4 font-medium">Status</th>
+                                    <th class="py-3 px-4 font-medium">Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <!-- Orders will be injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script type="module">
+        import Chart from 'chart.js/auto';
+        import { faker } from '@faker-js/faker/locale/pt_BR';
+
+        // Mock Data Generation
+        const formatCurrency = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        const totalRevenue = faker.finance.amount(15000, 25000, 2);
+        const todayOrders = faker.number.int({ min: 50, max: 150 });
+        const newCustomers = faker.number.int({ min: 5, max: 20 });
+        const avgRating = faker.number.float({ min: 4.5, max: 5.0, precision: 0.1 });
+
+        document.getElementById('total-revenue').textContent = formatCurrency(parseFloat(totalRevenue));
+        document.getElementById('today-orders').textContent = todayOrders;
+        document.getElementById('new-customers').textContent = newCustomers;
+        document.getElementById('avg-rating').textContent = avgRating;
+
+        // Sales Chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const salesData = Array.from({ length: 7 }, () => faker.finance.amount(1000, 3500, 2));
+        const salesLabels = Array.from({ length: 7 }, (_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        }).reverse();
+
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: salesLabels,
+                datasets: [{
+                    label: 'Vendas',
+                    data: salesData,
+                    borderColor: '#E99856',
+                    backgroundColor: 'rgba(233, 152, 86, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#E99856',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 7,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#E99856',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, ticks: { callback: (value) => formatCurrency(value) } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Burgers', 'Acompanhamentos', 'Bebidas'],
+                datasets: [{
+                    data: [faker.number.int(1000), faker.number.int(500), faker.number.int(300)],
+                    backgroundColor: ['#E99856', '#F28D34', '#6A1C0B'],
+                    borderWidth: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'rectRounded' } }
+                }
+            }
+        });
+
+        // Recent Orders Table
+        const ordersTableBody = document.getElementById('orders-table-body');
+        const statuses = [
+            { text: 'Concluído', class: 'bg-green-100 text-green-700' },
+            { text: 'Pendente', class: 'bg-yellow-100 text-yellow-700' },
+            { text: 'Cancelado', class: 'bg-red-100 text-red-700' }
+        ];
+        let ordersHtml = '';
+        for (let i = 0; i < 5; i++) {
+            const status = faker.helpers.arrayElement(statuses);
+            ordersHtml += `
+                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                    <td class="py-3 px-4">#${faker.number.int({ min: 1000, max: 9999 })}</td>
+                    <td class="py-3 px-4">${faker.person.fullName()}</td>
+                    <td class="py-3 px-4">${formatCurrency(faker.finance.amount(30, 150, 2))}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${status.class}">${status.text}</span>
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-500">${faker.date.recent({ days: 2 }).toLocaleDateString('pt-BR')}</td>
+                </tr>
+            `;
+        }
+        ordersTableBody.innerHTML = ordersHtml;
+    </script>
+</body>
+</html>

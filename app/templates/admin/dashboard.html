@@ -1,0 +1,644 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - {{ site_settings.store_name }}{% endblock %}
+{% block content %}
+<style>
+    .admin-dashboard {
+        background: var(--background-cream);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+    
+    .dashboard-header {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(106, 28, 11, 0.1);
+        border-left: 5px solid var(--primary-color);
+    }
+    
+    .dashboard-header h1 {
+        color: var(--dark-brown);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    .dashboard-header p {
+        color: var(--text-dark);
+        font-size: 1.1rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 10px 30px rgba(106, 28, 11, 0.08);
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: var(--card-color, var(--primary-color));
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(106, 28, 11, 0.15);
+    }
+    
+    .stat-card.card-primary { --card-color: #E99856; }
+    .stat-card.card-success { --card-color: #56ab2f; }
+    .stat-card.card-warning { --card-color: #F28D34; }
+    .stat-card.card-danger { --card-color: #6A1C0B; }
+    
+    .stat-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-icon.icon-primary { background: linear-gradient(135deg, #E99856, #E68036); }
+    .stat-icon.icon-success { background: linear-gradient(135deg, #56ab2f, #a8e063); }
+    .stat-icon.icon-warning { background: linear-gradient(135deg, #F28D34, #FF8723); }
+    .stat-icon.icon-danger { background: linear-gradient(135deg, #6A1C0B, #5E210D); }
+    
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-brown);
+        margin-bottom: 0.5rem;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    .stat-label {
+        color: var(--text-dark);
+        font-size: 1rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .quick-actions {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-top: 2rem;
+        box-shadow: 0 10px 30px rgba(106, 28, 11, 0.08);
+    }
+    
+    .quick-actions h3 {
+        color: var(--dark-brown);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    .action-btn {
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        margin: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-3px);
+        color: white;
+    }
+    
+    .action-btn.btn-products { 
+        background: linear-gradient(135deg, #E99856, #E68036);
+        box-shadow: 0 5px 15px rgba(233, 152, 86, 0.3);
+    }
+    .action-btn.btn-products:hover {
+        box-shadow: 0 10px 25px rgba(233, 152, 86, 0.4);
+    }
+    
+    .action-btn.btn-categories { 
+        background: linear-gradient(135deg, #F28D34, #FF8723);
+        box-shadow: 0 5px 15px rgba(242, 141, 52, 0.3);
+    }
+    .action-btn.btn-categories:hover {
+        box-shadow: 0 10px 25px rgba(242, 141, 52, 0.4);
+    }
+    
+    .action-btn.btn-orders { 
+        background: linear-gradient(135deg, #56ab2f, #a8e063);
+        box-shadow: 0 5px 15px rgba(86, 171, 47, 0.3);
+    }
+    .action-btn.btn-orders:hover {
+        box-shadow: 0 10px 25px rgba(86, 171, 47, 0.4);
+    }
+    
+    .action-btn.btn-tables { 
+        background: linear-gradient(135deg, #6A1C0B, #5E210D);
+        box-shadow: 0 5px 15px rgba(106, 28, 11, 0.3);
+    }
+    .action-btn.btn-tables:hover {
+        box-shadow: 0 10px 25px rgba(106, 28, 11, 0.4);
+    }
+    
+    .action-btn.btn-users { 
+        background: linear-gradient(135deg, #000000, #333333);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .action-btn.btn-users:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+    
+    .action-btn.btn-settings { 
+        background: linear-gradient(135deg, #E99856, #F28D34);
+        box-shadow: 0 5px 15px rgba(233, 152, 86, 0.3);
+    }
+    .action-btn.btn-settings:hover {
+        box-shadow: 0 10px 25px rgba(233, 152, 86, 0.4);
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-top: 2rem;
+        box-shadow: 0 10px 30px rgba(106, 28, 11, 0.08);
+    }
+    
+    .chart-container h3 {
+        color: var(--dark-brown);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    .recent-orders {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-top: 2rem;
+        box-shadow: 0 10px 30px rgba(106, 28, 11, 0.08);
+    }
+    
+    .recent-orders h3 {
+        color: var(--dark-brown);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    .order-item {
+        background: var(--background-cream);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+        border-left: 3px solid var(--primary-color);
+    }
+    
+    .order-item:hover {
+        background: #F5E5D3;
+        transform: translateX(5px);
+    }
+    
+    .badge-custom {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+    
+    .bg-primary-custom {
+        background: var(--primary-color) !important;
+    }
+    
+    .bg-success-custom {
+        background: #56ab2f !important;
+    }
+    
+    .bg-warning-custom {
+        background: #F28D34 !important;
+    }
+    
+    .bg-danger-custom {
+        background: var(--dark-brown) !important;
+    }
+</style>
+
+<div class="admin-dashboard">
+    <div class="container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-chart-line"></i> Dashboard Administrativo</h1>
+            <p>Bem-vindo ao painel de controle do {{ site_settings.store_name }}</p>
+        </div>
+        
+        <!-- Estatísticas em Cards -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card card-primary">
+                    <div class="stat-icon icon-primary">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-value">{{ total_orders }}</div>
+                    <div class="stat-label">Total de Pedidos</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card card-warning">
+                    <div class="stat-icon icon-warning">
+                        <i class="fas fa-hamburger"></i>
+                    </div>
+                    <div class="stat-value">{{ total_products }}</div>
+                    <div class="stat-label">Produtos Cadastrados</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card card-success">
+                    <div class="stat-icon icon-success">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-value">R$ {{ "%.2f"|format(total_revenue) }}</div>
+                    <div class="stat-label">Receita Total</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card card-danger">
+                    <div class="stat-icon icon-danger">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-value">{{ pending_orders }}</div>
+                    <div class="stat-label">Pedidos Pendentes</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ações Rápidas -->
+        <div class="quick-actions">
+            <h3><i class="fas fa-bolt"></i> Ações Rápidas</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="{{ url_for('admin.products') }}" class="action-btn btn-products">
+                        <i class="fas fa-hamburger"></i> Gerenciar Produtos
+                    </a>
+                    <a href="{{ url_for('admin.categories') }}" class="action-btn btn-categories">
+                        <i class="fas fa-th-large"></i> Categorias
+                    </a>
+                    <a href="{{ url_for('admin.orders') }}" class="action-btn btn-orders">
+                        <i class="fas fa-receipt"></i> Ver Pedidos
+                    </a>
+                    <a href="{{ url_for('admin.tables') }}" class="action-btn btn-tables">
+                        <i class="fas fa-table"></i> Mesas
+                    </a>
+                    <a href="{{ url_for('admin.users') }}" class="action-btn btn-users">
+                        <i class="fas fa-users"></i> Usuários
+                    </a>
+                    <a href="{{ url_for('admin.settings') }}" class="action-btn btn-settings">
+                        <i class="fas fa-cog"></i> Configurações
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráfico de Pedidos -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="chart-container">
+                    <h3><i class="fas fa-chart-bar"></i> Visão Geral de Vendas</h3>
+                    <canvas id="salesChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="chart-container">
+                    <h3><i class="fas fa-chart-pie"></i> Status dos Pedidos</h3>
+                    <canvas id="statusChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Monitoramento da Cozinha em Tempo Real -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="chart-container">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3><i class="fas fa-fire"></i> Monitoramento da Cozinha em Tempo Real</h3>
+                        <a href="{{ url_for('pdv.kds') }}" class="action-btn btn-orders" target="_blank">
+                            <i class="fas fa-tv"></i> Abrir KDS
+                        </a>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card" style="margin: 0;">
+                                <div class="stat-icon" style="background: #4facfe; width: 50px; height: 50px; font-size: 1.5rem;">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <div class="stat-value" style="font-size: 2rem;">{{ pending_orders }}</div>
+                                <div class="stat-label">Novos Pedidos</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card" style="margin: 0;">
+                                <div class="stat-icon" style="background: #f2994a; width: 50px; height: 50px; font-size: 1.5rem;">
+                                    <i class="fas fa-fire"></i>
+                                </div>
+                                <div class="stat-value" style="font-size: 2rem;">{{ preparing_orders }}</div>
+                                <div class="stat-label">Em Preparação</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card" style="margin: 0;">
+                                <div class="stat-icon" style="background: #56ab2f; width: 50px; height: 50px; font-size: 1.5rem;">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-value" style="font-size: 2rem;">{{ ready_orders }}</div>
+                                <div class="stat-label">Prontos</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card" style="margin: 0;">
+                                <div class="stat-icon" style="background: #667eea; width: 50px; height: 50px; font-size: 1.5rem;">
+                                    <i class="fas fa-hand-holding"></i>
+                                </div>
+                                <div class="stat-value" style="font-size: 2rem;">{{ delivered_orders }}</div>
+                                <div class="stat-label">Entregues</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if kitchen_orders %}
+                    <h4 class="mb-3" style="color: var(--dark-brown); font-weight: 600;">Pedidos Ativos na Cozinha</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead style="background: var(--background-cream);">
+                                <tr>
+                                    <th>Pedido #</th>
+                                    <th>Tipo</th>
+                                    <th>Status</th>
+                                    <th>Items</th>
+                                    <th>Tempo</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order_data in kitchen_orders %}
+                                <tr>
+                                    <td><strong style="color: var(--primary-color);">#{{ order_data.order.id }}</strong></td>
+                                    <td>
+                                        {% if order_data.order.table_id %}
+                                        <i class="fas fa-table"></i> Mesa {{ order_data.order.table_id }}
+                                        {% elif order_data.order.order_type == 'entrega' %}
+                                        <i class="fas fa-motorcycle"></i> Entrega
+                                        {% else %}
+                                        <i class="fas fa-shopping-bag"></i> Retirada
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if order_data.order.status == 'pendente' %}
+                                        <span class="badge" style="background: #4facfe; color: white;">NOVO</span>
+                                        {% elif order_data.order.status == 'preparando' %}
+                                        <span class="badge" style="background: #f2994a; color: white;">PREPARANDO</span>
+                                        {% elif order_data.order.status == 'pronto' %}
+                                        <span class="badge" style="background: #56ab2f; color: white;">PRONTO</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small>
+                                        {% for item in order_data['items'] %}
+                                            <div class="mb-1">
+                                                <span class="badge bg-secondary">{{ item.quantity }}x</span> {{ item.product_name }}
+                                                {% if item.status == 'novo' %}
+                                                <span class="badge" style="background: #4facfe; font-size: 0.7rem;">novo</span>
+                                                {% elif item.status == 'preparando' %}
+                                                <span class="badge" style="background: #f2994a; font-size: 0.7rem;">prep</span>
+                                                {% elif item.status == 'pronto' %}
+                                                <span class="badge" style="background: #56ab2f; font-size: 0.7rem;">ok</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        {% if order_data.age_minutes > 30 %}
+                                        <span class="badge bg-danger">{{ order_data.age_minutes }} min</span>
+                                        {% elif order_data.age_minutes > 15 %}
+                                        <span class="badge bg-warning text-dark">{{ order_data.age_minutes }} min</span>
+                                        {% else %}
+                                        <span class="badge bg-success">{{ order_data.age_minutes }} min</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('admin.order_detail', id=order_data.order.id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5" style="color: #999;">
+                        <i class="fas fa-check-circle fa-3x mb-3"></i>
+                        <p>Nenhum pedido ativo na cozinha no momento</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pedidos Recentes -->
+        {% if recent_orders %}
+        <div class="recent-orders">
+            <h3><i class="fas fa-history"></i> Pedidos Recentes</h3>
+            {% for order in recent_orders %}
+            <div class="order-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong style="color: var(--dark-brown);">Pedido #{{ order['id'] }}</strong>
+                    {% if order['table_id'] %}
+                    <span class="ms-2"><i class="fas fa-table"></i> Mesa {{ order['table_id'] }}</span>
+                    {% endif %}
+                </div>
+                <div>
+                    <span class="badge-custom bg-primary-custom text-white me-2">R$ {{ "%.2f"|format(order['total']) }}</span>
+                    {% if order['status'] == 'pago' %}
+                    <span class="badge-custom bg-success-custom text-white">{{ order['status']|upper }}</span>
+                    {% elif order['status'] == 'pendente' %}
+                    <span class="badge-custom bg-warning-custom text-white">{{ order['status']|upper }}</span>
+                    {% else %}
+                    <span class="badge-custom bg-danger-custom text-white">{{ order['status']|upper }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Gráfico de Vendas
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    const salesChart = new Chart(salesCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            datasets: [{
+                label: 'Vendas (R$)',
+                data: [1200, 1900, 3000, 2500, 2800, 3500, 4200, 3800, 4500, 5000, 5500, {{ total_revenue }}],
+                borderColor: '#E99856',
+                backgroundColor: 'rgba(233, 152, 86, 0.1)',
+                tension: 0.4,
+                fill: true,
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14,
+                            weight: 'bold',
+                            family: 'Montserrat'
+                        },
+                        color: '#6A1C0B'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(106, 28, 11, 0.05)'
+                    },
+                    ticks: {
+                        color: '#6A1C0B',
+                        font: {
+                            family: 'Poppins'
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#6A1C0B',
+                        font: {
+                            family: 'Poppins'
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Gráfico de Status
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    const statusChart = new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Pagos', 'Pendentes', 'Cancelados'],
+            datasets: [{
+                data: [{{ total_orders - pending_orders }}, {{ pending_orders }}, 0],
+                backgroundColor: [
+                    '#56ab2f',
+                    '#F28D34',
+                    '#6A1C0B'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            size: 12,
+                            weight: 'bold',
+                            family: 'Montserrat'
+                        },
+                        color: '#6A1C0B',
+                        padding: 15
+                    }
+                }
+            }
+        }
+    });
+    
+    // Polling de métricas a cada 15 segundos
+    function updateMetrics() {
+        fetch('{{ url_for("admin.api_metrics") }}')
+            .then(response => response.json())
+            .then(data => {
+                // Atualizar contadores da cozinha
+                const kitchenStats = document.querySelectorAll('.stat-value');
+                if (kitchenStats[0]) kitchenStats[0].textContent = data.total_items_pending;
+                if (kitchenStats[1]) kitchenStats[1].textContent = data.total_items_preparing;
+                if (kitchenStats[2]) kitchenStats[2].textContent = data.total_items_ready;
+                
+                // Atualizar tabela de pedidos ativos
+                const tbody = document.querySelector('.table tbody');
+                if (tbody && data.kitchen_orders) {
+                    let tableHTML = '';
+                    data.kitchen_orders.forEach(order => {
+                        let statusClass = 'secondary';
+                        if (order.status === 'preparando') statusClass = 'warning';
+                        else if (order.status === 'pronto') statusClass = 'success';
+                        
+                        let priorityClass = 'success';
+                        if (order.age_minutes > 30) priorityClass = 'danger';
+                        else if (order.age_minutes > 15) priorityClass = 'warning';
+                        
+                        tableHTML += `
+                            <tr>
+                                <td>#${order.id}</td>
+                                <td>Mesa ${order.table_number}</td>
+                                <td><span class="badge bg-${statusClass}">${order.status}</span></td>
+                                <td>${order.items_count}</td>
+                                <td><span class="badge bg-${priorityClass}">${order.age_minutes} min</span></td>
+                            </tr>
+                        `;
+                    });
+                    tbody.innerHTML = tableHTML || '<tr><td colspan="5" class="text-center">Nenhum pedido ativo</td></tr>';
+                }
+            })
+            .catch(error => console.log('Erro ao atualizar métricas:', error));
+    }
+    
+    // Atualizar a cada 15 segundos
+    setInterval(updateMetrics, 15000);
+</script>
+{% endblock %}

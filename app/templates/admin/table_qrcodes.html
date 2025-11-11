@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}QR Codes das Mesas - Admin{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="{{ url_for('admin.tables') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Mesas
+        </a>
+    </div>
+    <h2>QR Codes das Mesas</h2>
+    <p class="text-muted">Imprima e coloque estes QR codes nas mesas para que os clientes possam acessar o cardápio digital</p>
+    
+    <div class="row mt-4">
+        {% for table in tables %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card text-center">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Mesa {{ table.number }}</h5>
+                </div>
+                <div class="card-body">
+                    <div id="qrcode-{{ table.id }}" class="mb-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+                    <p class="small text-muted" id="url-{{ table.id }}"></p>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-sm btn-primary" onclick="imprimirQRCode({{ table.id }})">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                    <button class="btn btn-sm btn-success" onclick="baixarQRCode({{ table.id }})">
+                        <i class="fas fa-download"></i> Baixar
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% for table in tables %}
+    gerarQRCode({{ table.id }});
+    {% endfor %}
+});
+
+function gerarQRCode(tableId) {
+    fetch(`/admin/mesa/${tableId}/qrcode`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const container = document.getElementById(`qrcode-${tableId}`);
+                container.innerHTML = `<img src="${data.qrcode}" alt="QR Code Mesa ${tableId}" style="max-width: 200px;">`;
+                
+                document.getElementById(`url-${tableId}`).textContent = data.url;
+                
+                window[`qrcode_data_${tableId}`] = data.qrcode;
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao gerar QR code:', error);
+            document.getElementById(`qrcode-${tableId}`).innerHTML = 
+                '<div class="alert alert-danger">Erro ao gerar QR code</div>';
+        });
+}
+
+function imprimirQRCode(tableId) {
+    const qrcodeData = window[`qrcode_data_${tableId}`];
+    if (!qrcodeData) return;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>QR Code - Mesa ${tableId}</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    padding: 20px;
+                }
+                h1 { margin: 20px 0; }
+                img { max-width: 300px; }
+                @media print {
+                    button { display: none; }
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Mesa ${tableId}</h1>
+            <p>Escaneie o QR Code para ver o cardápio</p>
+            <img src="${qrcodeData}" alt="QR Code">
+            <br><br>
+            <button onclick="window.print()">Imprimir</button>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    setTimeout(() => printWindow.print(), 500);
+}
+
+function baixarQRCode(tableId) {
+    const qrcodeData = window[`qrcode_data_${tableId}`];
+    if (!qrcodeData) return;
+    
+    const link = document.createElement('a');
+    link.href = qrcodeData;
+    link.download = `qrcode-mesa-${tableId}.png`;
+    link.click();
+}
+</script>
+{% endblock %}

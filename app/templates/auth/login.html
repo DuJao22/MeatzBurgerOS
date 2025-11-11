@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Meatz Burger{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="mb-3">
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar para Início
+                </a>
+            </div>
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">
+                        {% if login_type == 'garcom' %}
+                            <i class="fas fa-user-tie"></i> Acesso Garçom
+                        {% elif login_type == 'caixa' %}
+                            <i class="fas fa-cash-register"></i> Acesso Caixa
+                        {% elif login_type == 'cozinha' %}
+                            <i class="fas fa-utensils"></i> Acesso Cozinha
+                        {% else %}
+                            Entrar
+                        {% endif %}
+                    </h2>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Usuário</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Senha</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" name="remember" id="remember">
+                            <label class="form-check-label" for="remember">Lembrar-me</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                    </form>
+                    <hr>
+                    <p class="text-center">Não tem conta? <a href="{{ url_for('auth.register') }}">Registrar</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

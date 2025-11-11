@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Login Cliente - Meatz Burger{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="mb-3">
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar para Início
+                </a>
+            </div>
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Fazer Pedido</h2>
+                    <p class="text-center text-muted mb-4">Entre com seu nome e telefone</p>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Nome</label>
+                            <input type="text" class="form-control" name="name" required placeholder="Seu nome completo">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Telefone</label>
+                            <input type="tel" class="form-control" name="phone" required placeholder="(00) 00000-0000">
+                            <small class="form-text text-muted">Use o mesmo telefone para acessar seus pedidos</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Continuar</button>
+                    </form>
+                    <hr>
+                    <p class="text-center text-muted small">
+                        Ao continuar, seus dados serão salvos para facilitar futuros pedidos
+                    </p>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('auth.login') }}" class="text-muted small" style="text-decoration: none; font-size: 0.85rem;">
+                            <i class="fas fa-user-lock"></i> Acesso para Funcionários
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

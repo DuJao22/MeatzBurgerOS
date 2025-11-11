@@ -1,0 +1,1453 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, rgba(233, 152, 86, 0.9), rgba(242, 141, 52, 0.9)), 
+                    url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200') center/cover;
+        min-height: 700px;
+        display: flex;
+        align-items: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-content {
+        text-align: center;
+        padding: 3rem 0;
+    }
+    
+    .hero-content h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.3;
+        margin-bottom: 1rem;
+        text-shadow: 3px 3px 8px rgba(0,0,0,0.7);
+        color: #FFFFFF;
+    }
+    
+    .hero-content p {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+        color: #FFFFFF;
+        font-weight: 500;
+    }
+    
+    .delivery-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+    
+    .delivery-btn {
+        background: white;
+        border-radius: 15px;
+        padding: 1rem 2rem;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .delivery-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    .delivery-btn img {
+        height: 60px;
+        width: auto;
+    }
+    
+    .divider {
+        text-align: center;
+        margin: 3rem 0;
+    }
+    
+    .divider img {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .location-section {
+        background-color: white;
+        padding: 4rem 0;
+    }
+    
+    .location-box {
+        background: var(--background-cream);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .location-box h3 {
+        font-size: 2rem;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        margin-bottom: 2rem;
+        color: var(--dark-brown);
+        text-align: center;
+        text-transform: uppercase;
+    }
+    
+    .info-item {
+        display: flex;
+        align-items: start;
+        margin-bottom: 1.5rem;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 15px;
+        color: var(--dark-brown);
+    }
+    
+    .info-item i {
+        color: var(--accent-color);
+        font-size: 2rem;
+        margin-right: 1rem;
+        min-width: 40px;
+    }
+    
+    .info-item strong {
+        color: var(--dark-brown);
+        font-weight: 600;
+    }
+    
+    .product-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        height: 100%;
+        background: white;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(106, 28, 11, 0.3);
+    }
+    
+    .product-card img {
+        height: 250px;
+        object-fit: cover;
+        width: 100%;
+    }
+    
+    .product-card .card-body {
+        padding: 1.5rem;
+    }
+    
+    .product-name {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 1.3rem;
+        color: var(--dark-brown);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+    }
+    
+    .category-section {
+        padding: 5rem 0;
+        background-color: #000000;
+        position: relative;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+        text-transform: uppercase;
+    }
+    
+    .carousel-container {
+        position: relative;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 0 50px;
+    }
+    
+    .carousel-products {
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .carousel-track {
+        display: flex;
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .carousel-item-custom {
+        min-width: 100%;
+        padding: 0 10px;
+    }
+    
+    .product-card-mobile {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        background: white;
+        max-width: 350px;
+        margin: 0 auto;
+    }
+    
+    .product-card-mobile .card-top {
+        background: var(--primary-color);
+        padding: 60px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 280px;
+    }
+    
+    .product-card-mobile .card-top img {
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+        max-height: 200px;
+    }
+    
+    .product-card-mobile .card-bottom {
+        background: white;
+        padding: 25px;
+        text-align: center;
+    }
+    
+    .product-card-mobile .product-name-mobile {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: var(--dark-brown);
+        text-transform: uppercase;
+        margin: 0 0 10px 0;
+    }
+    
+    .product-card-mobile .product-price {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        margin: 10px 0 15px 0;
+    }
+    
+    .product-card-mobile .btn-add-cart {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        transition: all 0.3s;
+        box-shadow: 0 3px 10px rgba(233, 152, 86, 0.3);
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .product-card-mobile .btn-add-cart:hover {
+        background: var(--accent-color);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(242, 141, 52, 0.4);
+    }
+    
+    .product-card-mobile .btn-add-cart i {
+        margin-right: 8px;
+    }
+    
+    .carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 2.5rem;
+        cursor: pointer;
+        z-index: 10;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s;
+    }
+    
+    .carousel-arrow:hover {
+        opacity: 0.7;
+    }
+    
+    .carousel-arrow.prev {
+        left: 0;
+    }
+    
+    .carousel-arrow.next {
+        right: 0;
+    }
+    
+    .carousel-indicators-custom {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 30px;
+    }
+    
+    .carousel-indicator-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.4);
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+    
+    .carousel-indicator-dot.active {
+        background: white;
+    }
+    
+    .floating-buttons {
+        position: fixed;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .floating-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-decoration: none;
+        border: 2px solid white;
+    }
+    
+    .floating-btn:hover {
+        transform: translateX(-5px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    
+    .floating-btn.meatz {
+        background: var(--primary-color);
+    }
+    
+    .floating-btn.ifood {
+        background: #EA1D2C;
+    }
+    
+    .floating-btn.whatsapp {
+        background: #25D366;
+    }
+    
+    .floating-btn i {
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .whatsapp-float {
+        display: none;
+    }
+    
+    .about-section {
+        background-color: white;
+        padding: 5rem 0;
+    }
+    
+    .about-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 16px;
+        line-height: 1.8;
+        color: #666666;
+    }
+    
+    .benefits-section {
+        background-color: #000000;
+        padding: 5rem 0;
+        position: relative;
+    }
+    
+    .benefit-card-mobile {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        background: white;
+        max-width: 350px;
+        margin: 0 auto;
+    }
+    
+    .benefit-card-mobile .card-top-benefit {
+        padding: 30px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 250px;
+        background: #f5f5f5;
+    }
+    
+    .benefit-card-mobile .card-top-benefit img {
+        max-width: 100%;
+        height: auto;
+        object-fit: cover;
+        max-height: 220px;
+        border-radius: 10px;
+    }
+    
+    .benefit-card-mobile .card-bottom-benefit {
+        background: white;
+        padding: 25px;
+        text-align: center;
+    }
+    
+    .benefit-card-mobile .benefit-name {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 1rem;
+        color: var(--dark-brown);
+        text-transform: uppercase;
+        margin: 0;
+    }
+    
+    .reviews-section {
+        background-color: var(--primary-color);
+        padding: 5rem 0;
+    }
+    
+    .reviews-section .section-title {
+        color: var(--dark-brown);
+    }
+    
+    .reviews-section p {
+        color: white;
+    }
+    
+    .review-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        max-width: 480px;
+        margin: 0 auto;
+    }
+    
+    .review-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .review-header img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin-right: 1rem;
+        object-fit: cover;
+    }
+    
+    .review-card h6 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        color: var(--dark-brown);
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        text-transform: uppercase;
+    }
+    
+    .review-card p {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
+        color: #666666;
+        margin-bottom: 1rem;
+    }
+    
+    .review-header h5 {
+        margin: 0;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+    }
+    
+    .review-stars {
+        color: #FFD700;
+    }
+    
+    .google-logo {
+        width: 25px;
+        height: 25px;
+        margin-right: 5px;
+    }
+    
+    .meatz-logo-review {
+        max-width: 150px;
+        margin: 0 auto 1.5rem;
+        display: block;
+    }
+    
+    .faq-section {
+        background-color: #000000;
+        padding: 5rem 0;
+    }
+    
+    .faq-section .section-title {
+        color: var(--primary-color);
+        text-transform: uppercase;
+    }
+    
+    .faq-section p {
+        color: white;
+    }
+    
+    .faq-item {
+        background: #F5F5F5;
+        border-radius: 0;
+        padding: 0;
+        margin-bottom: 0.5rem;
+        box-shadow: none;
+        border: none;
+        overflow: hidden;
+    }
+    
+    .faq-question {
+        background: #F5F5F5;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        border: none;
+        width: 100%;
+        text-align: left;
+        transition: background 0.3s;
+    }
+    
+    .faq-question:hover {
+        background: #ECECEC;
+    }
+    
+    .faq-question h5 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        color: var(--dark-brown);
+        margin: 0;
+        font-size: 0.95rem;
+        flex: 1;
+    }
+    
+    .faq-toggle {
+        width: 30px;
+        height: 30px;
+        background: var(--dark-brown);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        flex-shrink: 0;
+        transition: transform 0.3s;
+    }
+    
+    .faq-toggle.active {
+        transform: rotate(45deg);
+    }
+    
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: white;
+    }
+    
+    .faq-answer.active {
+        max-height: 500px;
+    }
+    
+    .faq-answer p {
+        margin: 0;
+        padding: 1rem 1.5rem;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
+        color: #666666;
+    }
+    
+    .cta-section {
+        background: var(--primary-color);
+        padding: 3rem 0;
+        text-align: center;
+        color: white;
+        border-radius: 30px;
+        margin: 0 1rem 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-section h2 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    
+    .cta-section .burgers-image {
+        max-width: 100%;
+        height: auto;
+        margin: 1.5rem 0;
+    }
+    
+    .cta-section .cta-text {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--dark-brown);
+        margin-top: 1rem;
+        text-transform: uppercase;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section {
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .hero-content h1 {
+            font-size: 2rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-content p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-content h3 {
+            font-size: 1.3rem !important;
+        }
+        
+        .hero-content img {
+            max-width: 100% !important;
+            margin-bottom: 2rem !important;
+        }
+        
+        .delivery-buttons {
+            gap: 1rem;
+        }
+        
+        .delivery-btn {
+            padding: 0.8rem 1.5rem;
+        }
+        
+        .delivery-btn i {
+            font-size: 40px !important;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            padding: 0 20px;
+            line-height: 1.3;
+        }
+        
+        .category-section {
+            padding: 3rem 0;
+        }
+        
+        .category-section p {
+            color: white;
+            font-size: 0.95rem;
+            padding: 0 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .carousel-container {
+            padding: 0 40px;
+        }
+        
+        .carousel-arrow {
+            font-size: 2rem;
+        }
+        
+        .floating-buttons {
+            right: 10px;
+            top: auto;
+            bottom: 90px;
+            transform: none;
+            gap: 10px;
+        }
+        
+        .floating-btn {
+            width: 55px;
+            height: 55px;
+        }
+        
+        .whatsapp-float {
+            width: 55px;
+            height: 55px;
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        .whatsapp-float i {
+            font-size: 1.7rem;
+        }
+        
+        .location-section {
+            padding: 2rem 0;
+        }
+        
+        .location-box {
+            padding: 1.5rem;
+        }
+        
+        .location-box h3 {
+            font-size: 1.5rem;
+        }
+        
+        .info-item {
+            font-size: 0.9rem;
+        }
+        
+        .info-item i {
+            font-size: 1.5rem;
+        }
+        
+        .about-section,
+        .benefits-section,
+        .reviews-section,
+        .faq-section {
+            padding: 3rem 0;
+        }
+        
+        .about-text {
+            font-size: 1rem;
+        }
+        
+        .about-text p {
+            margin-bottom: 1rem;
+        }
+        
+        .benefit-card {
+            padding: 1.5rem 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .benefit-card i {
+            font-size: 40px !important;
+        }
+        
+        .benefit-card h4 {
+            font-size: 1rem;
+        }
+        
+        .review-card {
+            padding: 1.5rem;
+        }
+        
+        .faq-item {
+            padding: 1rem;
+        }
+        
+        .faq-item h5 {
+            font-size: 1rem;
+        }
+        
+        .cta-section h2 {
+            font-size: 1.8rem;
+        }
+        
+        .product-card img {
+            height: 200px;
+        }
+        
+        .product-name {
+            font-size: 1.1rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .hero-content h1 {
+            font-size: 1.5rem;
+        }
+        
+        .hero-content p {
+            font-size: 0.9rem;
+        }
+        
+        .hero-content h3 {
+            font-size: 1.1rem !important;
+        }
+        
+        .delivery-btn i {
+            font-size: 35px !important;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            padding: 0 15px;
+        }
+        
+        .category-section p {
+            font-size: 0.85rem;
+            padding: 0 15px;
+        }
+        
+        .carousel-container {
+            padding: 0 35px;
+        }
+        
+        .product-card-mobile .card-top {
+            padding: 50px 15px;
+            min-height: 250px;
+        }
+        
+        .product-name-mobile {
+            font-size: 1rem;
+        }
+        
+        .location-box h3 {
+            font-size: 1.3rem;
+        }
+        
+        .floating-buttons {
+            right: 8px;
+            bottom: 80px;
+        }
+        
+        .floating-btn {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .floating-btn i {
+            font-size: 1.5rem !important;
+        }
+        
+        .whatsapp-float {
+            width: 50px;
+            height: 50px;
+            bottom: 15px;
+            right: 15px;
+        }
+        
+        .whatsapp-float i {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&h=500" alt="BurgerLoft Burger" class="img-fluid mb-4" style="border-radius: 20px; max-width: 600px;">
+            <h1>Visite nossa loja física para experimentar<br>o simples da melhor forma!</h1>
+            <p>Ou peça pelo delivery e receba seu BurgerLoft no conforto da sua casa.</p>
+            <h3 class="mb-4" style="font-weight: 700; text-shadow: 2px 2px 6px rgba(0,0,0,0.7); color: #FFFFFF;">FAÇA SEU PEDIDO AGORA!</h3>
+            
+            <div class="delivery-buttons">
+                <a href="{{ url_for('main.menu') }}" class="delivery-btn" aria-label="Ver Cardápio no Site">
+                    <i class="fas fa-hamburger" style="font-size: 60px; color: var(--primary-color);"></i>
+                    <div style="font-size: 0.9rem; color: var(--text-dark); margin-top: 0.5rem; font-weight: 600;">Cardápio</div>
+                </a>
+                <a href="https://www.ifood.com.br" target="_blank" class="delivery-btn" aria-label="Pedir pelo iFood">
+                    <i class="fas fa-shopping-bag" style="font-size: 60px; color: #EA1D2C;"></i>
+                    <div style="font-size: 0.9rem; color: var(--text-dark); margin-top: 0.5rem; font-weight: 600;">iFood</div>
+                </a>
+                <a href="https://wa.me/{{ site_settings.whatsapp }}" target="_blank" class="delivery-btn" aria-label="Pedir pelo WhatsApp">
+                    <i class="fab fa-whatsapp" style="font-size: 60px; color: #25D366;"></i>
+                    <div style="font-size: 0.9rem; color: var(--text-dark); margin-top: 0.5rem; font-weight: 600;">WhatsApp</div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if banners %}
+<section class="py-4 bg-light">
+    <div class="container">
+        <div id="promoBannersCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                {% for banner in banners %}
+                <button type="button" data-bs-target="#promoBannersCarousel" data-bs-slide-to="{{ loop.index0 }}" 
+                        class="{{ 'active' if loop.first else '' }}"></button>
+                {% endfor %}
+            </div>
+            <div class="carousel-inner" style="border-radius: 15px; overflow: hidden;">
+                {% for banner in banners %}
+                <div class="carousel-item {{ 'active' if loop.first else '' }}">
+                    {% if banner.link_url %}
+                    <a href="{{ banner.link_url }}">
+                        <img src="{{ banner.image_url }}" class="d-block w-100" alt="{{ banner.title }}" style="max-height: 400px; object-fit: cover;">
+                    </a>
+                    {% else %}
+                    <img src="{{ banner.image_url }}" class="d-block w-100" alt="{{ banner.title }}" style="max-height: 400px; object-fit: cover;">
+                    {% endif %}
+                    <div class="carousel-caption d-none d-md-block" style="background: rgba(0,0,0,0.6); padding: 20px; border-radius: 10px;">
+                        <h3>{{ banner.title }}</h3>
+                        {% if banner.description %}
+                        <p>{{ banner.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#promoBannersCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#promoBannersCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+            </button>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="location-section">
+    <div class="container">
+        <div class="location-box">
+            <h3>Como chegar no BurgerLoft Hamburgueria</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong>Endereço:</strong><br>
+                            {{ site_settings.address }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <strong>Horário de funcionamento:</strong><br>
+                            {{ site_settings.opening_hours }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <a href="#" class="btn btn-primary">
+                    <i class="fas fa-directions"></i> Traçar Rota
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="category-section">
+    <div class="container">
+        <h2 class="section-title">Confira nossos Hambúrgueres Artesanais em Destaque</h2>
+        <p class="text-center mb-4" style="color: white; font-size: 1rem; line-height: 1.6;">
+            Confira o que torna o BurgerLoft referência como hamburgueria.<br>
+            Lanches bem servidos, combinações irresistíveis<br>
+            e opções para todos os gostos.
+        </p>
+        
+        <div class="carousel-container">
+            <button class="carousel-arrow prev" onclick="moveCarousel(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <div class="carousel-products">
+                <div class="carousel-track" id="carouselTrack">
+                    {% for product in products %}
+                    <div class="carousel-item-custom">
+                        <div class="product-card-mobile">
+                            <div class="card-top">
+                                <img src="{{ product.image_url or 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400' }}" 
+                                     alt="{{ product.name }}">
+                            </div>
+                            <div class="card-bottom">
+                                <h5 class="product-name-mobile">{{ product.name }}</h5>
+                                <div class="product-price">R$ {{ "%.2f"|format(product.price) }}</div>
+                                <form action="{{ url_for('main.add_product_to_cart', product_id=product.id) }}" method="POST">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-add-cart">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Adicionar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <button class="carousel-arrow next" onclick="moveCarousel(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        <div class="carousel-indicators-custom" id="carouselIndicators">
+            {% for product in products %}
+            <button class="carousel-indicator-dot {% if loop.first %}active{% endif %}" 
+                    onclick="goToSlide({{ loop.index0 }})"></button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<div class="floating-buttons">
+    <a href="{{ url_for('main.menu') }}" class="floating-btn meatz" aria-label="BurgerLoft Delivery">
+        <i class="fas fa-hamburger"></i>
+    </a>
+    <a href="https://www.ifood.com.br" target="_blank" class="floating-btn ifood" aria-label="iFood">
+        <i class="fas fa-shopping-bag"></i>
+    </a>
+    <a href="https://wa.me/{{ site_settings.whatsapp }}" target="_blank" class="floating-btn whatsapp" aria-label="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</div>
+
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4">
+                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600" alt="Sobre BurgerLoft Burger" class="img-fluid" style="border-radius: 20px;">
+            </div>
+            <div class="col-md-6">
+                <h2 class="section-title text-start">Sobre BurgerLoft Burger</h2>
+                <div class="about-text">
+                    <p>O BurgerLoft Burger nasceu de uma necessidade que se transformou em oportunidade. Em 2015, o engenheiro ambiental Cirano Ribeiro enfrentava três meses de salário atrasado. Com as contas se acumulando, ele tomou uma decisão: investiu suas últimas economias em um pequeno trailer no bairro de Águas Claras, no Distrito Federal.</p>
+                    
+                    <p>Essa simplicidade forçada acabou se tornando a nossa essência. O slogan "O simples da melhor forma" é a história real de como tudo começou. Com apenas uma opção de hambúrguer, o Basic Burger (hoje conhecido como Classic), e um cardápio enxuto, conquistamos clientes fiéis desde o início.</p>
+                    
+                    <p>Nosso modelo de crescimento é único: cada loja é operada por um sócio, criando uma rede de empreendedores comprometidos com o sucesso do negócio. Hoje, após quase 10 anos, contamos com 20 unidades próprias em 6 estados, vendendo aproximadamente 90 mil hambúrgueres por mês.</p>
+                    
+                    <p>Em 2024, iniciamos a expansão por franquias mantendo a essência da marca: qualidade, simplicidade e sucesso compartilhado. De um trailer adaptado a uma rede que faturou R$ 48 milhões em 2024, o BurgerLoft Burger é prova de que o simples, quando feito da melhor forma, pode conquistar o Brasil.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="benefits-section">
+    <div class="container">
+        <h2 class="section-title" style="color: var(--primary-color); text-transform: uppercase;">Por que escolher o BurgerLoft como sua Hamburgueria em Contagem?</h2>
+        <p class="text-center mb-4" style="color: white; font-size: 1rem; line-height: 1.6;">
+            O BurgerLoft Burger se destaca como hamburgueria por unir<br>
+            qualidade, atendimento rápido e um cardápio que agrada todos os gostos.
+        </p>
+        
+        <div class="carousel-container">
+            <button class="carousel-arrow prev" onclick="moveBenefitsCarousel(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <div class="carousel-products">
+                <div class="carousel-track" id="benefitsCarouselTrack">
+                    <div class="carousel-item-custom">
+                        <div class="benefit-card-mobile">
+                            <div class="card-top-benefit">
+                                <img src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=400" alt="Ingredientes Selecionados">
+                            </div>
+                            <div class="card-bottom-benefit">
+                                <h5 class="benefit-name">Ingredientes Selecionados</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item-custom">
+                        <div class="benefit-card-mobile">
+                            <div class="card-top-benefit">
+                                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400" alt="Hambúrguer artesanal">
+                            </div>
+                            <div class="card-bottom-benefit">
+                                <h5 class="benefit-name">Hambúrguer artesanal com sabor único</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item-custom">
+                        <div class="benefit-card-mobile">
+                            <div class="card-top-benefit">
+                                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Atendimento">
+                            </div>
+                            <div class="card-bottom-benefit">
+                                <h5 class="benefit-name">Atendimento ágil e atencioso</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item-custom">
+                        <div class="benefit-card-mobile">
+                            <div class="card-top-benefit">
+                                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400" alt="Variedade">
+                            </div>
+                            <div class="card-bottom-benefit">
+                                <h5 class="benefit-name">Opções que agradam todos os gostos</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item-custom">
+                        <div class="benefit-card-mobile">
+                            <div class="card-top-benefit">
+                                <img src="https://images.unsplash.com/photo-1526367790999-0150786686a2?w=400" alt="Delivery">
+                            </div>
+                            <div class="card-bottom-benefit">
+                                <h5 class="benefit-name">Delivery rápido e bem avaliado</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="carousel-arrow next" onclick="moveBenefitsCarousel(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        <div class="carousel-indicators-custom" id="benefitsCarouselIndicators">
+            <button class="carousel-indicator-dot active" onclick="goToBenefitSlide(0)"></button>
+            <button class="carousel-indicator-dot" onclick="goToBenefitSlide(1)"></button>
+            <button class="carousel-indicator-dot" onclick="goToBenefitSlide(2)"></button>
+            <button class="carousel-indicator-dot" onclick="goToBenefitSlide(3)"></button>
+            <button class="carousel-indicator-dot" onclick="goToBenefitSlide(4)"></button>
+        </div>
+    </div>
+</section>
+
+<section class="reviews-section">
+    <div class="container">
+        <h2 class="section-title" style="text-transform: uppercase;">Avaliações do BurgerLoft Burger em Contagem</h2>
+        <p class="text-center mb-4" style="font-size: 1rem; line-height: 1.6;">
+            Veja opiniões reais de clientes sobre o BurgerLoft Burger<br>
+            e descubra se vale a pena visitar
+        </p>
+        
+        <div class="text-center mb-4">
+            <div class="d-inline-block" style="background: transparent;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="BurgerLoft Logo" style="height: 60px;">
+                    <div style="text-align: left;">
+                        <h3 class="mb-0" style="color: var(--dark-brown); font-weight: 800; font-size: 2rem;">+ 1.200</h3>
+                        <p class="mb-0" style="font-weight: 700; color: var(--dark-brown); font-size: 0.9rem;">AVALIAÇÕES</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="carousel-container" style="max-width: 500px;">
+            <div class="carousel-products">
+                <div class="carousel-track" id="reviewsCarouselTrack">
+                    <div class="carousel-item-custom">
+                        <div class="review-card">
+                            <div class="review-header">
+                                <img src="https://img-wrapper.vercel.app/image?url=https://randomuser.me/api/portraits/men/32.jpg" alt="Arcílio Guimarães">
+                                <div>
+                                    <h5>Arcílio Guimarães</h5>
+                                </div>
+                            </div>
+                            <h6>Fomos pela curiosidade, saímos encantados</h6>
+                            <p>Atendimento extremamente cortês do gerente, muito simpático e atento a todas informações. Fui com o meu filho e gostamos de tudo.</p>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <img src="https://www.google.com/favicon.ico" alt="Google" class="google-logo">
+                                <div class="review-stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item-custom">
+                        <div class="review-card">
+                            <div class="review-header">
+                                <img src="https://img-wrapper.vercel.app/image?url=https://randomuser.me/api/portraits/women/44.jpg" alt="Juliana Medeiros">
+                                <div>
+                                    <h5>Juliana Medeiros</h5>
+                                </div>
+                            </div>
+                            <h6>Um capítulo da nossa história</h6>
+                            <p>Vim comemorar um ano de namoro no meats, lugar onde tive meu primeiro encontro com meu namorado. E o atendimento continua impecável.</p>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <img src="https://www.google.com/favicon.ico" alt="Google" class="google-logo">
+                                <div class="review-stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="carousel-indicators-custom" id="reviewsCarouselIndicators">
+            <button class="carousel-indicator-dot active" onclick="goToReviewSlide(0)" style="background: white;"></button>
+            <button class="carousel-indicator-dot" onclick="goToReviewSlide(1)" style="background: rgba(255,255,255,0.4);"></button>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <div class="container">
+        <h2 class="section-title">Perguntas Frequentes (FAQ)</h2>
+        <p class="text-center mb-5" style="font-size: 1rem; line-height: 1.6;">Tire suas dúvidas sobre o BurgerLoft Burger:<br>horário, cardápio, pedidos e mais</p>
+        
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <h5>O cardápio da unidade é o mesmo do aplicativo?</h5>
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Não. Há alguns produtos exclusivos somente nas lojas físicas, como, por exemplo, a batata com molho e bacon.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <h5>Aceitam Pix e cartão?</h5>
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sim. Aceitamos Pix, crédito e débito no local e no app.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <h5>Há opção sem carne?</h5>
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Não.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <h5>Onde fica a unidade exatamente?</h5>
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Estamos em Av. Principal, 175 - Centro, Cidade - UF, 00000-000.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <h5>Qual é a melhor hamburgueria para pedir online?</h5>
+                        <span class="faq-toggle">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>O BurgerLoft é referência como hamburgueria, contando com uma nota de 4.9 e mais de 1.200 avaliações.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container">
+        <h2>BurgerLoft Burger</h2>
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&h=300&fit=crop" alt="Hambúrgueres" class="burgers-image">
+        <p class="cta-text">Peça agora seu hambúrguer artesanal no BurgerLoft Contagem!</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const carouselState = {
+        products: {
+            currentSlide: 0,
+            track: null,
+            indicators: null,
+            interval: null,
+            get total() { return this.track ? this.track.querySelectorAll('.carousel-item-custom').length : 0; }
+        },
+        benefits: {
+            currentSlide: 0,
+            track: null,
+            indicators: null,
+            interval: null,
+            get total() { return this.track ? this.track.querySelectorAll('.carousel-item-custom').length : 0; }
+        },
+        reviews: {
+            currentSlide: 0,
+            track: null,
+            indicators: null,
+            interval: null,
+            get total() { return this.track ? this.track.querySelectorAll('.carousel-item-custom').length : 0; }
+        }
+    };
+    
+    carouselState.products.track = document.getElementById('carouselTrack');
+    carouselState.products.indicators = document.querySelectorAll('#carouselIndicators .carousel-indicator-dot');
+    
+    carouselState.benefits.track = document.getElementById('benefitsCarouselTrack');
+    carouselState.benefits.indicators = document.querySelectorAll('#benefitsCarouselIndicators .carousel-indicator-dot');
+    
+    carouselState.reviews.track = document.getElementById('reviewsCarouselTrack');
+    carouselState.reviews.indicators = document.querySelectorAll('#reviewsCarouselIndicators .carousel-indicator-dot');
+    
+    function updateCarouselView(carouselName) {
+        const carousel = carouselState[carouselName];
+        if (!carousel.track || carousel.total === 0) return;
+        
+        carousel.track.style.transform = `translateX(-${carousel.currentSlide * 100}%)`;
+        
+        carousel.indicators.forEach((dot, index) => {
+            if (index === carousel.currentSlide) {
+                dot.classList.add('active');
+                if (carouselName === 'reviews') {
+                    dot.style.background = 'white';
+                }
+            } else {
+                dot.classList.remove('active');
+                if (carouselName === 'reviews') {
+                    dot.style.background = 'rgba(255,255,255,0.4)';
+                }
+            }
+        });
+    }
+    
+    function autoAdvanceCarousel(carouselName) {
+        const carousel = carouselState[carouselName];
+        carousel.currentSlide = (carousel.currentSlide + 1) % carousel.total;
+        updateCarouselView(carouselName);
+    }
+    
+    window.moveCarousel = function(direction) {
+        const carousel = carouselState.products;
+        carousel.currentSlide += direction;
+        
+        if (carousel.currentSlide < 0) {
+            carousel.currentSlide = carousel.total - 1;
+        } else if (carousel.currentSlide >= carousel.total) {
+            carousel.currentSlide = 0;
+        }
+        
+        updateCarouselView('products');
+    };
+    
+    window.goToSlide = function(index) {
+        carouselState.products.currentSlide = index;
+        updateCarouselView('products');
+    };
+    
+    window.moveBenefitsCarousel = function(direction) {
+        const carousel = carouselState.benefits;
+        carousel.currentSlide += direction;
+        
+        if (carousel.currentSlide < 0) {
+            carousel.currentSlide = carousel.total - 1;
+        } else if (carousel.currentSlide >= carousel.total) {
+            carousel.currentSlide = 0;
+        }
+        
+        updateCarouselView('benefits');
+        
+        if (carousel.interval) {
+            clearInterval(carousel.interval);
+            carousel.interval = setInterval(() => autoAdvanceCarousel('benefits'), 5000);
+        }
+    };
+    
+    window.goToBenefitSlide = function(index) {
+        const carousel = carouselState.benefits;
+        carousel.currentSlide = index;
+        updateCarouselView('benefits');
+        
+        if (carousel.interval) {
+            clearInterval(carousel.interval);
+            carousel.interval = setInterval(() => autoAdvanceCarousel('benefits'), 5000);
+        }
+    };
+    
+    window.moveReviewsCarousel = function(direction) {
+        const carousel = carouselState.reviews;
+        carousel.currentSlide += direction;
+        
+        if (carousel.currentSlide < 0) {
+            carousel.currentSlide = carousel.total - 1;
+        } else if (carousel.currentSlide >= carousel.total) {
+            carousel.currentSlide = 0;
+        }
+        
+        updateCarouselView('reviews');
+        
+        if (carousel.interval) {
+            clearInterval(carousel.interval);
+            carousel.interval = setInterval(() => autoAdvanceCarousel('reviews'), 5000);
+        }
+    };
+    
+    window.goToReviewSlide = function(index) {
+        const carousel = carouselState.reviews;
+        carousel.currentSlide = index;
+        updateCarouselView('reviews');
+        
+        if (carousel.interval) {
+            clearInterval(carousel.interval);
+            carousel.interval = setInterval(() => autoAdvanceCarousel('reviews'), 5000);
+        }
+    };
+    
+    window.toggleFaq = function(button) {
+        const faqItem = button.parentElement;
+        const answer = faqItem.querySelector('.faq-answer');
+        const toggle = button.querySelector('.faq-toggle');
+        const allAnswers = document.querySelectorAll('.faq-answer');
+        const allToggles = document.querySelectorAll('.faq-toggle');
+        
+        allAnswers.forEach((item, index) => {
+            if (item !== answer) {
+                item.classList.remove('active');
+                allToggles[index].classList.remove('active');
+            }
+        });
+        
+        answer.classList.toggle('active');
+        toggle.classList.toggle('active');
+    };
+    
+    ['products', 'benefits', 'reviews'].forEach(carouselName => {
+        if (carouselState[carouselName].total > 0) {
+            updateCarouselView(carouselName);
+        }
+    });
+    
+    if (carouselState.reviews.total > 0) {
+        carouselState.reviews.interval = setInterval(() => autoAdvanceCarousel('reviews'), 5000);
+    }
+    
+    if (carouselState.benefits.total > 0) {
+        carouselState.benefits.interval = setInterval(() => autoAdvanceCarousel('benefits'), 5000);
+    }
+});
+</script>
+{% endblock %}

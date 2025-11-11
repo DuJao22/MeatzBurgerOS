@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Mapa do Salão - PDV{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-3">
+                <a href="{{ url_for('pdv.index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar para PDV
+                </a>
+            </div>
+            <h2>Mapa do Salão</h2>
+            <p class="text-muted">Visualização e controle de mesas</p>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <button class="btn btn-primary" onclick="mergeSelectedTables()">Juntar Mesas Selecionadas</button>
+            <button class="btn btn-secondary" onclick="clearSelection()">Limpar Seleção</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex flex-wrap gap-3">
+                {% for table in tables %}
+                <div class="card table-card" style="width: 200px;" 
+                     id="table-{{ table.id }}"
+                     data-table-id="{{ table.id }}">
+                    <div class="card-body text-center 
+                        {% if table.status == 'livre' %}bg-light{% endif %}
+                        {% if table.status == 'ocupada' %}bg-warning{% endif %}
+                        {% if table.status == 'reservada' %}bg-info text-white{% endif %}">
+                        <h5>Mesa {{ table.number }}</h5>
+                        <p class="mb-2">
+                            <span class="badge 
+                                {% if table.status == 'livre' %}bg-success{% endif %}
+                                {% if table.status == 'ocupada' %}bg-danger{% endif %}
+                                {% if table.status == 'reservada' %}bg-primary{% endif %}">
+                                {{ table.status|upper }}
+                            </span>
+                        </p>
+                        {% if table.order %}
+                        <small>Pedido #{{ table.order.id }}</small><br>
+                        <small>R$ {{ "%.2f"|format(table.order.total) }}</small><br>
+                        <small class="badge bg-{% if table.order.status == 'pago' %}success{% else %}warning{% endif %}">
+                            {{ table.order.status|upper }}
+                        </small>
+                        {% endif %}
+                        
+                        <div class="mt-2 d-flex flex-column gap-1">
+                            {% if table.status == 'livre' %}
+                            <button class="btn btn-sm btn-success" onclick="event.stopPropagation(); openTable({{ table.id }})">
+                                Abrir Mesa
+                            </button>
+                            {% elif table.status == 'ocupada' %}
+                            <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); window.location.href='/pdv/mesa/{{ table.id }}'">
+                                Ver Pedido
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); closeTable({{ table.id }})">
+                                Fechar Mesa
+                            </button>
+                            {% endif %}
+                            <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); selectTable({{ table.id }})">
+                                Selecionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let selectedTables = [];
+
+function selectTable(tableId) {
+    const card = document.getElementById('table-' + tableId);
+    if (selectedTables.includes(tableId)) {
+        selectedTables = selectedTables.filter(id => id !== tableId);
+        card.style.border = '';
+    } else {
+        selectedTables.push(tableId);
+        card.style.border = '3px solid blue';
+    }
+}
+
+function clearSelection() {
+    selectedTables.forEach(id => {
+        document.getElementById('table-' + id).style.border = '';
+    });
+    selectedTables = [];
+}
+
+function mergeSelectedTables() {
+    if (selectedTables.length < 2) {
+        alert('Selecione pelo menos 2 mesas para juntar');
+        return;
+    }
+    
+    fetch('/pdv/api/mesas/juntar', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({table_ids: selectedTables})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Mesas juntadas com sucesso!');
+            location.reload();
+        }
+    });
+}
+
+function openTable(tableId) {
+    if (!confirm('Deseja abrir esta mesa?')) {
+        return;
+    }
+    
+    fetch(`/pdv/api/mesas/${tableId}/abrir`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Erro: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Erro ao abrir mesa: ' + error);
+    });
+}
+
+function closeTable(tableId) {
+    if (!confirm('Deseja fechar esta mesa? A mesa só pode ser fechada se o pagamento foi confirmado.')) {
+        return;
+    }
+    
+    fetch(`/pdv/api/mesas/${tableId}/fechar`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Erro: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Erro ao fechar mesa: ' + error);
+    });
+}
+</script>
+{% endblock %}
